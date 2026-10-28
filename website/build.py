@@ -21,6 +21,6 @@ for i, (_, stem, meta, body) in enumerate(pages):
     prev = f'<a href="{pages[i-1][1]}.html">← {pages[i-1][2]["nav"]}</a>' if i else "<span></span>"
     nxt = f'<a href="{pages[i+1][1]}.html">{pages[i+1][2]["nav"]} →</a>' if i + 1 < len(pages) else "<span></span>"
     out = SHELL.replace("{{title}}", meta["title"]).replace("{{nav}}", nav).replace("{{body}}", html).replace("{{prev}}", prev).replace("{{next}}", nxt)
-    out = re.sub(r'href="index\.html"', 'href="/docs/"', out); out = re.sub(r'href="([a-z]+)\.html"', r'href="/docs/\1"', out)
+    out = re.sub(r'href="index\.html"', 'href="/docs/"', out); out = re.sub(r'href="([a-z]+)\.html(#[A-Za-z0-9_-]+)?"', r'href="/docs/\1\2"', out)
     (ROOT / "docs" / f"{stem}.html").write_text(out)
     print("built", stem)

@@ -72,4 +72,4 @@ The sub-agent shows up to the model as a tool named `ask_<name>` (override with 
 
 ## Limits
 
-Handoffs are one-way, and an orchestrator sees only a sub-agent's final answer, not its intermediate events. For round-trips, review loops, shared state and resumable multi-step pipelines, use the Graph API (v0.2) or the Crew API (v0.3).
+Handoffs are one-way, and an orchestrator sees only a sub-agent's final answer, not its intermediate events. For round-trips, review loops, shared state and resumable multi-step pipelines, use the [Graph API (v0.2)](roadmap.html#graph-api) or the [Crew API (v0.3)](roadmap.html#crew-api).

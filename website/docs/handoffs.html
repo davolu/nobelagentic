@@ -69,7 +69,7 @@
 <p>The sub-agent shows up to the model as a tool named <code>ask_&lt;name&gt;</code> (override with <code>as_tool(name=..., description=...)</code>). Because sub-agents are ordinary tools, the kernel's parallel tool calls apply: when the orchestrator asks the researcher and the writer for independent things in one step, they run concurrently.</p>
 <p><strong>Choosing between them:</strong> handoff when the <em>user</em> should end up talking to the specialist (triage, escalation). Orchestrate when the <em>agent</em> needs the specialist's output as an ingredient (research → write → combine).</p>
 <h2>Limits</h2>
-<p>Handoffs are one-way, and an orchestrator sees only a sub-agent's final answer, not its intermediate events. For round-trips, review loops, shared state and resumable multi-step pipelines, use the Graph API (v0.2) or the Crew API (v0.3).</p><div class="pager"><a href="/docs/mcp">← MCP</a><a href="/docs/cli">CLI →</a></div></article>
+<p>Handoffs are one-way, and an orchestrator sees only a sub-agent's final answer, not its intermediate events. For round-trips, review loops, shared state and resumable multi-step pipelines, use the <a href="/docs/roadmap#graph-api">Graph API (v0.2)</a> or the <a href="/docs/roadmap#crew-api">Crew API (v0.3)</a>.</p><div class="pager"><a href="/docs/mcp">← MCP</a><a href="/docs/cli">CLI →</a></div></article>
 </div>
 </div>
 </body>
