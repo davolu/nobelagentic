@@ -18,8 +18,8 @@
   },
   "keywords": ["agents", "llm", "ai", "mcp", "anthropic", "openai", "framework"],
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/oluyaled/swarm-agents" },
-  "homepage": "https://github.com/oluyaled/swarm-agents#readme",
+  "repository": { "type": "git", "url": "https://github.com/davolu/swarm-agents" },
+  "homepage": "https://github.com/davolu/swarm-agents#readme",
   "engines": { "node": ">=18" },
   "dependencies": {
     "zod": "^3.23.0",

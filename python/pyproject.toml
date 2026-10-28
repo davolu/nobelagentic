@@ -20,7 +20,7 @@ all = ["anthropic>=0.40", "openai>=1.50", "mcp>=1.2", "duckduckgo-search>=6.0"]
 dev = ["pytest>=8", "pytest-asyncio>=0.24"]
 
 [project.urls]
-Homepage = "https://github.com/oluyaled/swarm-agents"
+Homepage = "https://github.com/davolu/swarm-agents"
 Documentation = "https://swarmagents.vercel.app"
 
 [project.scripts]
