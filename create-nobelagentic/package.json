@@ -1,0 +1,13 @@
+{
+  "name": "create-nobelagentic",
+  "version": "0.1.0",
+  "description": "Scaffold a NobelAgentic agent project: npm create nobelagentic my-agent",
+  "type": "module",
+  "bin": { "create-nobelagentic": "./index.mjs" },
+  "files": ["index.mjs", "README.md"],
+  "keywords": ["agents", "llm", "ai", "nobelagentic", "create", "scaffold"],
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/davolu/nobelagentic" },
+  "homepage": "https://nobelagentic.vercel.app",
+  "engines": { "node": ">=18" }
+}

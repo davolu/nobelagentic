@@ -115,6 +115,73 @@ def mcp_add(name: str, command: str):
     console.print(f"[green]added[/green] {name}")
 
 
+_SCAFFOLD = {
+    "agent.py": '''"""{name} — built with nobelagentic. Run: python agent.py"""
+import asyncio
+
+from nobelagentic import Agent, TextDelta, ToolCallStart, tool
+
+
+@tool
+def lookup_order(order_id: str) -> dict:
+    """Look up an order by ID (replace with your real data source)."""
+    return {{"order_id": order_id, "status": "shipped", "eta_days": 2}}
+
+
+agent = Agent(
+    "You are the support agent for {name}. Be warm and brief.",
+    tools=[lookup_order, "time", "math"],
+)
+
+
+async def main() -> None:
+    async for ev in agent.stream("Where is order 42?"):
+        if isinstance(ev, TextDelta):
+            print(ev.text, end="", flush=True)
+        elif isinstance(ev, ToolCallStart):
+            print(f"\\n[{{ev.call.name}}]")
+    print()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+''',
+    "requirements.txt": "nobelagentic[all]>={version}\n",
+    ".gitignore": "__pycache__/\n.venv/\n.env\n",
+    "README.md": '''# {name}
+
+An agent scaffolded with `nobelagentic new`.
+
+```bash
+pip install -r requirements.txt
+export ANTHROPIC_API_KEY=...   # or OPENAI_API_KEY / GEMINI_API_KEY
+python agent.py
+```
+
+Edit `agent.py`: swap `lookup_order` for a real tool, add packs (`"web"`, `"files"`)
+or MCP servers (`mcp=["github"]`). Docs: https://nobelagentic.vercel.app/docs
+''',
+}
+
+
+@app.command()
+def new(name: str):
+    """Scaffold a new agent project:  nobelagentic new my-agent."""
+    import pathlib
+    root = pathlib.Path(name)
+    if root.exists():
+        console.print(f"[red]error:[/red] '{name}' already exists")
+        raise typer.Exit(1)
+    root.mkdir(parents=True)
+    for fname, content in _SCAFFOLD.items():
+        (root / fname).write_text(content.format(name=name, version=__version__))
+    console.print(f"[green]created[/green] {name}/ ({', '.join(_SCAFFOLD)})")
+    console.print(f"\n  cd {name}")
+    console.print("  pip install -r requirements.txt")
+    console.print("  export ANTHROPIC_API_KEY=...   # or OPENAI_API_KEY")
+    console.print("  python agent.py")
+
+
 @app.command()
 def version():
     console.print(__version__)

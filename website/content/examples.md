@@ -156,16 +156,15 @@ while (true) {
 
 ## Keeping context between messages
 
-Chat platforms deliver one message at a time. Until first-class memory lands (see the [roadmap](roadmap.html)), the simple pattern is to prepend recent history yourself:
+Chat platforms deliver one message at a time. Every run accepts `history=` — the full typed transcript, tool calls included — and returns the updated one on the result:
 
 ```python
-history: dict[str, list[str]] = {}
+sessions: dict[str, list] = {}          # user_id → message history
 
 def handle(user_id: str, text: str) -> str:
-    past = "\n".join(history.setdefault(user_id, [])[-6:])
-    reply = str(agent.run(f"Recent conversation:\n{past}\n\nUser: {text}"))
-    history[user_id] += [f"User: {text}", f"You: {reply}"]
-    return reply
+    result = agent.run(text, history=sessions.get(user_id))
+    sessions[user_id] = [m for m in result.messages if m.role != "system"]
+    return str(result)
 ```
 
-Swap the dict for Redis in production and you have a stateful bot on a stateless framework.
+Swap the dict for Redis in production and you have a stateful bot today. First-class sessions — `agent.run(text, session="user-123")` with pluggable storage — land in v0.2 (see the [roadmap](roadmap.html)).

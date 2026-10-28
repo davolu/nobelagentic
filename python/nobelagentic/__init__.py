@@ -9,7 +9,7 @@
 
     print(Agent("You are a calculator.", tools=[add]).run("What is 2+2?"))
 """
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from .agent import Agent
 from .tools import Tool, ToolError, tool
