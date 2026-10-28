@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Examples — NobelAgentic docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='4' fill='%23D89B00'/%3E%3Ccircle cx='4' cy='7' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='22' cy='6' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='6' cy='21' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='21' cy='20' r='2.4' fill='%23161A22'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>NobelAgentic</a>
+  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/davolu/nobelagentic">GitHub</a></nav>
+</header>
+<div class="docs">
+  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/examples" aria-current=page>Examples</a><a href="/docs/roadmap">Roadmap</a></aside>
+  <article><h1>Building real agents</h1>
+<p>Recipes for the question everyone asks next: <em>"OK, but how do I ship something useful?"</em>
+Every example below uses only the public API — <code>Agent</code>, <code>@tool</code>, <code>handoffs</code>, <code>mcp</code> — glued to the outside world with ordinary webhook code.</p>
+<h2>A WhatsApp agent</h2>
+<p>NobelAgentic doesn't care where messages come from. Point any webhook at an <code>Agent</code> and reply with the result. Here's a WhatsApp support agent using the <a href="https://developers.facebook.com/docs/whatsapp/cloud-api">WhatsApp Cloud API</a> and FastAPI:</p>
+<pre><code class="lang-python">import os, httpx
+from fastapi import FastAPI, Request
+from nobelagentic import Agent, tool
+
+@tool
+def order_status(order_id: str) -&gt; dict:
+    &quot;&quot;&quot;Look up an order's status and ETA by its ID.&quot;&quot;&quot;
+    r = httpx.get(f&quot;https://api.yourshop.com/orders/{order_id}&quot;,
+                  headers={&quot;Authorization&quot;: f&quot;Bearer {os.environ['SHOP_API_KEY']}&quot;})
+    return r.json()
+
+agent = Agent(
+    &quot;You are the support agent for YourShop. Be warm and brief — &quot;
+    &quot;answers go to WhatsApp, so no markdown, short paragraphs.&quot;,
+    tools=[order_status, &quot;time&quot;],
+)
+
+app = FastAPI()
+WA_TOKEN = os.environ[&quot;WHATSAPP_TOKEN&quot;]
+PHONE_ID = os.environ[&quot;WHATSAPP_PHONE_ID&quot;]
+
+@app.post(&quot;/webhook&quot;)
+async def webhook(req: Request):
+    data = await req.json()
+    msg = data[&quot;entry&quot;][0][&quot;changes&quot;][0][&quot;value&quot;][&quot;messages&quot;][0]
+    reply = agent.run(msg[&quot;text&quot;][&quot;body&quot;])
+    httpx.post(
+        f&quot;https://graph.facebook.com/v21.0/{PHONE_ID}/messages&quot;,
+        headers={&quot;Authorization&quot;: f&quot;Bearer {WA_TOKEN}&quot;},
+        json={&quot;messaging_product&quot;: &quot;whatsapp&quot;, &quot;to&quot;: msg[&quot;from&quot;],
+              &quot;text&quot;: {&quot;body&quot;: str(reply)}},
+    )
+    return {&quot;status&quot;: &quot;ok&quot;}
+</code></pre>
+<p>That's the whole bot. The same shape works for Telegram, Slack, Discord, SMS via Twilio — swap the webhook parsing and the send call.</p>
+<h2>Any third-party API as a tool</h2>
+<p>A tool is just a function. Type hints and the docstring become the schema the model sees, so wrapping any SDK or REST API is one decorator:</p>
+<pre><code class="lang-python">import httpx
+from nobelagentic import Agent, tool
+
+@tool
+def search_crm(query: str) -&gt; list:
+    &quot;&quot;&quot;Search customers in the CRM by name or email.&quot;&quot;&quot;
+    return httpx.get(&quot;https://api.crm.example.com/search&quot;,
+                     params={&quot;q&quot;: query}).json()
+
+@tool
+async def create_ticket(title: str, body: str, priority: str = &quot;normal&quot;) -&gt; dict:
+    &quot;&quot;&quot;Open a support ticket. Priority: low, normal, or urgent.&quot;&quot;&quot;
+    async with httpx.AsyncClient() as c:
+        r = await c.post(&quot;https://api.ticketing.example.com/tickets&quot;,
+                         json={&quot;title&quot;: title, &quot;body&quot;: body, &quot;priority&quot;: priority})
+        return r.json()
+
+agent = Agent(&quot;You handle inbound support requests end to end.&quot;,
+              tools=[search_crm, create_ticket])
+
+agent.run(&quot;jane@acme.co says checkout is broken — file an urgent ticket&quot;)
+</code></pre>
+<p>Sync and async functions both work. Raise an exception and the model sees the error message and can recover.</p>
+<h2>A support team with handoffs</h2>
+<p>Split responsibilities across agents and let a triage agent route:</p>
+<pre><code class="lang-python">from nobelagentic import Agent
+
+billing = Agent(&quot;You resolve billing questions. You can issue refunds up to $50.&quot;,
+                name=&quot;billing&quot;, tools=[search_crm, &quot;math&quot;])
+tech    = Agent(&quot;You debug technical issues. Ask for error messages early.&quot;,
+                name=&quot;tech&quot;, tools=[create_ticket, &quot;web&quot;])
+
+triage = Agent(
+    &quot;Classify the user's problem and hand off to billing or tech immediately. &quot;
+    &quot;Never answer yourself.&quot;,
+    name=&quot;triage&quot;,
+    handoffs=[billing, tech],
+)
+
+result = triage.run(&quot;I was charged twice for my subscription this month&quot;)
+print(result.agent, &quot;→&quot;, result.output)   # billing → ...
+</code></pre>
+<h2>Third-party services via MCP</h2>
+<p>Anything with an MCP server — GitHub, Postgres, Stripe, your own internal tools — plugs in without writing a wrapper:</p>
+<pre><code class="lang-python">Agent(&quot;You triage bug reports into GitHub issues.&quot;,
+      mcp=[&quot;github&quot;])                                  # registry name
+
+Agent(&quot;You answer questions about our production data. Read-only.&quot;,
+      mcp=[&quot;postgres&quot;])
+
+Agent(&quot;...&quot;, mcp=[&quot;https://mcp.yourcompany.com/mcp&quot;])  # any remote server
+</code></pre>
+<p>Register a server once with <code>nobelagentic mcp add myserver "npx -y some-mcp-server"</code> and every project can use it by name.</p>
+<h2>TypeScript: a Telegram bot</h2>
+<p>The TypeScript package has the same API. A long-polling Telegram bot, no framework needed:</p>
+<pre><code class="lang-ts">import { Agent, tool, z } from &quot;nobelagentic&quot;;
+
+const fx = tool({
+  name: &quot;fx_rate&quot;,
+  description: &quot;Current exchange rate between two currencies&quot;,
+  parameters: z.object({ from: z.string(), to: z.string() }),
+  execute: async ({ from, to }) =&gt;
+    (await fetch(`https://api.frankfurter.app/latest?from=${from}&amp;to=${to}`)).json(),
+});
+
+const agent = new Agent(&quot;You are a concise personal finance assistant.&quot;, {
+  tools: [fx, &quot;math&quot;, &quot;time&quot;],
+});
+
+const API = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}`;
+let offset = 0;
+while (true) {
+  const { result } = await (await fetch(`${API}/getUpdates?timeout=30&amp;offset=${offset}`)).json();
+  for (const u of result) {
+    offset = u.update_id + 1;
+    if (!u.message?.text) continue;
+    const reply = await agent.run(u.message.text);
+    await fetch(`${API}/sendMessage`, {
+      method: &quot;POST&quot;, headers: { &quot;content-type&quot;: &quot;application/json&quot; },
+      body: JSON.stringify({ chat_id: u.message.chat.id, text: String(reply) }),
+    });
+  }
+}
+</code></pre>
+<h2>Keeping context between messages</h2>
+<p>Chat platforms deliver one message at a time. Until first-class memory lands (see the <a href="/docs/roadmap">roadmap</a>), the simple pattern is to prepend recent history yourself:</p>
+<pre><code class="lang-python">history: dict[str, list[str]] = {}
+
+def handle(user_id: str, text: str) -&gt; str:
+    past = &quot;\n&quot;.join(history.setdefault(user_id, [])[-6:])
+    reply = str(agent.run(f&quot;Recent conversation:\n{past}\n\nUser: {text}&quot;))
+    history[user_id] += [f&quot;User: {text}&quot;, f&quot;You: {reply}&quot;]
+    return reply
+</code></pre>
+<p>Swap the dict for Redis in production and you have a stateful bot on a stateless framework.</p><div class="pager"><a href="/docs/cli">← CLI</a><a href="/docs/roadmap">Roadmap →</a></div></article>
+</div>
+</div>
+</body>
+</html>

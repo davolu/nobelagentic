@@ -13,7 +13,7 @@ export const REGISTRY: Record<string, Record<string, unknown>> = {
   memory: { command: "npx", args: ["-y", "@modelcontextprotocol/server-memory"] },
   slack: { command: "npx", args: ["-y", "@modelcontextprotocol/server-slack"], env: ["SLACK_BOT_TOKEN", "SLACK_TEAM_ID"] },
 };
-const CONFIG = path.join(os.homedir(), ".swarmagents", "mcp.json");
+const CONFIG = path.join(os.homedir(), ".nobelagentic", "mcp.json");
 
 async function userServers(): Promise<Record<string, Record<string, unknown>>> {
   try { return JSON.parse(await fs.readFile(CONFIG, "utf8")).servers ?? {}; } catch { return {}; }
@@ -25,7 +25,7 @@ async function resolveSpec(spec: string | Record<string, unknown>): Promise<Reco
   const user = await userServers();
   if (user[spec]) return user[spec];
   if (REGISTRY[spec]) return REGISTRY[spec];
-  throw new ToolError(`Unknown MCP server '${spec}'. Known: ${Object.keys(REGISTRY).join(", ")}; or add it with \`swarmagents mcp add\`.`);
+  throw new ToolError(`Unknown MCP server '${spec}'. Known: ${Object.keys(REGISTRY).join(", ")}; or add it with \`nobelagentic mcp add\`.`);
 }
 
 export async function connect(spec: string | Record<string, unknown>): Promise<Tool[]> {
@@ -37,7 +37,7 @@ export async function connect(spec: string | Record<string, unknown>): Promise<T
   } catch { throw new ToolError("npm install @modelcontextprotocol/sdk"); }
   const cfg = await resolveSpec(spec);
   for (const v of (cfg.env as string[]) ?? []) if (!process.env[v]) throw new ToolError(`MCP server needs env var ${v}`);
-  const client = new sdk.Client({ name: "swarmagents", version: "0.1.0" });
+  const client = new sdk.Client({ name: "nobelagentic", version: "0.1.0" });
   const transport = cfg.url
     ? new http.StreamableHTTPClientTransport(new URL(cfg.url as string))
     : new stdio.StdioClientTransport({ command: cfg.command, args: cfg.args ?? [], env: { ...process.env, ...((cfg.env_values as any) ?? {}) } });

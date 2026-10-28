@@ -28,7 +28,7 @@ def run_python(code: str) -> str:
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
         try:
-            exec(code, {"__name__": "__swarmagents__"})
+            exec(code, {"__name__": "__nobelagentic__"})
         except Exception as e:  # noqa: BLE001
             print(f"{type(e).__name__}: {e}")
     return buf.getvalue()[-8000:] or "(no output)"

@@ -32,12 +32,12 @@ A missing credential fails at agent construction with the variable's name, not h
 ## Your own servers
 
 ```bash
-swarmagents mcp add weather "npx -y weather-mcp --units metric"
-swarmagents mcp add internal https://mcp.internal.example.com/mcp
+nobelagentic mcp add weather "npx -y weather-mcp --units metric"
+nobelagentic mcp add internal https://mcp.internal.example.com/mcp
 ```
 
-These are saved to `~/.swarmagents/mcp.json` and available in every project by name.
+These are saved to `~/.nobelagentic/mcp.json` and available in every project by name.
 
 ## Roadmap
 
-MCP *server* mode — exposing an agent or tool pack as an MCP server with `swarmagents serve --mcp` — is planned for v0.4, so anything you build here plugs into Claude Code, Cursor and other MCP hosts.
+MCP *server* mode — exposing an agent or tool pack as an MCP server with `nobelagentic serve --mcp` — is planned for v0.4, so anything you build here plugs into Claude Code, Cursor and other MCP hosts.

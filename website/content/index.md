@@ -5,20 +5,20 @@ order: 1
 ---
 # Getting started
 
-Swarm Agents is an agent framework with one rule: you should never have to learn more of it than the task needs. Start with one agent. Add tools, MCP servers, handoffs, crews or graphs only when they earn their place.
+NobelAgentic is an agent framework with one rule: you should never have to learn more of it than the task needs. Start with one agent. Add tools, MCP servers, handoffs, crews or graphs only when they earn their place.
 
 ## Install
 
 Python:
 
 ```bash
-pip install "swarmagents[anthropic]"     # or [openai], [all]
+pip install "nobelagentic[anthropic]"     # or [openai], [all]
 ```
 
 TypeScript:
 
 ```bash
-npm install swarmagents @anthropic-ai/sdk   # or openai
+npm install nobelagentic @anthropic-ai/sdk   # or openai
 ```
 
 Set one API key and you're done — the model is picked from whatever key is present:
@@ -34,7 +34,7 @@ No key? Run a local model: `model="ollama:llama3.1"`.
 Python:
 
 ```python
-from swarmagents import Agent, tool
+from nobelagentic import Agent, tool
 
 @tool
 def get_weather(city: str) -> str:
@@ -48,7 +48,7 @@ print(agent.run("What's the weather in Lagos and what time is it there?"))
 TypeScript:
 
 ```ts
-import { Agent, tool, z } from "swarmagents";
+import { Agent, tool, z } from "nobelagentic";
 
 const getWeather = tool({
   name: "get_weather",

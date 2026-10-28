@@ -8,7 +8,7 @@ order: 5
 A handoff passes the conversation to another agent. It's the seed of the Crew API and is how you build triage, specialists and escalation paths today.
 
 ```python
-from swarmagents import Agent
+from nobelagentic import Agent
 
 billing = Agent("Handle billing questions. Be precise.", name="billing", tools=["data"])
 support = Agent("Handle technical support.", name="support", tools=["web"])

@@ -1,10 +1,10 @@
-"""MCP client: any MCP server becomes a set of swarmagents Tools.
+"""MCP client: any MCP server becomes a set of nobelagentic Tools.
 
     Agent(mcp=["github"])                                   # by registry name
     Agent(mcp=[{"command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]}])
     Agent(mcp=["https://my-server.example.com/mcp"])        # remote (HTTP)
 
-Registry names map to well-known stdio servers. Users can extend REGISTRY or use ~/.swarmagents/mcp.json.
+Registry names map to well-known stdio servers. Users can extend REGISTRY or use ~/.nobelagentic/mcp.json.
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ REGISTRY: dict[str, dict[str, Any]] = {
               "env": ["SLACK_BOT_TOKEN", "SLACK_TEAM_ID"]},
 }
 
-_CONFIG = Path.home() / ".swarmagents" / "mcp.json"
+_CONFIG = Path.home() / ".nobelagentic" / "mcp.json"
 _sessions: list[Any] = []  # keep sessions alive for the process lifetime
 
 
@@ -42,7 +42,7 @@ def _resolve_spec(spec: str | dict) -> dict:
             return user[spec]
     if spec in REGISTRY:
         return REGISTRY[spec]
-    raise ToolError(f"Unknown MCP server '{spec}'. Known: {', '.join(REGISTRY)}; or add it with `swarmagents mcp add`.")
+    raise ToolError(f"Unknown MCP server '{spec}'. Known: {', '.join(REGISTRY)}; or add it with `nobelagentic mcp add`.")
 
 
 async def connect(spec: str | dict) -> list[Tool]:
@@ -50,7 +50,7 @@ async def connect(spec: str | dict) -> list[Tool]:
         from mcp import ClientSession, StdioServerParameters
         from mcp.client.stdio import stdio_client
     except ImportError as e:
-        raise ToolError("pip install mcp  (or swarmagents[mcp])") from e
+        raise ToolError("pip install mcp  (or nobelagentic[mcp])") from e
     from contextlib import AsyncExitStack
 
     cfg = _resolve_spec(spec)

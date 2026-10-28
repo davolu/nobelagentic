@@ -16,7 +16,7 @@ class AnthropicProvider(Provider):
         try:
             import anthropic
         except ImportError as e:
-            raise ProviderError("pip install anthropic  (or swarmagents[anthropic])") from e
+            raise ProviderError("pip install anthropic  (or nobelagentic[anthropic])") from e
         self.client = anthropic.AsyncAnthropic(**{k: v for k, v in kwargs.items() if k in {"api_key", "base_url"}})
 
     # ---- translation -------------------------------------------------

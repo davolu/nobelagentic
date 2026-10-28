@@ -1,7 +1,7 @@
 ---
 title: Roadmap
 nav: Roadmap
-order: 7
+order: 8
 ---
 # Roadmap
 
@@ -11,6 +11,6 @@ order: 7
 
 **v0.3 — crews and memory.** `Crew(agents, tasks, process)`. Short-term and vector memory. Input and output guardrails. OpenTelemetry tracing and cost tracking.
 
-**v0.4 — ecosystem.** MCP server mode (`swarmagents serve --mcp`). A tool registry: `swarmagents add tool/weather` pulls a community tool the way `npm` pulls a package. 100+ built-in tools, many as thin wrappers over maintained MCP servers.
+**v0.4 — ecosystem.** MCP server mode (`nobelagentic serve --mcp`). A tool registry: `nobelagentic add tool/weather` pulls a community tool the way `npm` pulls a package. 100+ built-in tools, many as thin wrappers over maintained MCP servers.
 
 Suggest or vote on features in GitHub issues.

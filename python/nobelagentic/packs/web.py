@@ -33,7 +33,7 @@ async def fetch_url(url: str, max_chars: int = 8000) -> str:
         url: Full http(s) URL.
         max_chars: Truncate the text to this many characters.
     """
-    async with httpx.AsyncClient(follow_redirects=True, timeout=20, headers={"User-Agent": "swarmagents/0.1"}) as c:
+    async with httpx.AsyncClient(follow_redirects=True, timeout=20, headers={"User-Agent": "nobelagentic/0.1"}) as c:
         r = await c.get(url)
         r.raise_for_status()
     text = r.text

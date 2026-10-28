@@ -4,7 +4,7 @@
 """
 import asyncio
 
-from swarmagents import Agent, TextDelta, ToolCallStart, tool
+from nobelagentic import Agent, TextDelta, ToolCallStart, tool
 
 
 @tool

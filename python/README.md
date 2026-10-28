@@ -1,9 +1,9 @@
-# Swarm Agents (Python)
+# NobelAgentic (Python)
 
 **Agents that get out of your way.** One kernel, three APIs, any model.
 
 ```python
-from swarmagents import Agent, tool
+from nobelagentic import Agent, tool
 
 @tool
 def get_weather(city: str) -> str:
@@ -14,7 +14,7 @@ agent = Agent("You help plan trips", tools=[get_weather, "web", "time"])
 print(agent.run("What's the weather in Lagos right now?"))
 ```
 
-No model named → swarmagents picks one from whatever API key is in your environment.
+No model named → nobelagentic picks one from whatever API key is in your environment.
 No schemas written → type hints and the docstring *are* the schema.
 Errors tell you what to do, not just what broke.
 
@@ -46,7 +46,7 @@ Agent(tools=[
 ])
 ```
 
-Built-in packs (`swarmagents tools list`): `web` `files` `shell` `time` `math` `data`.
+Built-in packs (`nobelagentic tools list`): `web` `files` `shell` `time` `math` `data`.
 Packs are lazy-loaded; `shell` is opt-in only.
 
 ## MCP
@@ -57,7 +57,7 @@ Agent(mcp=["https://my-server.example.com/mcp"])        # remote
 Agent(mcp=[{"command": "npx", "args": ["-y", "some-mcp-server"]}])
 ```
 
-`swarmagents mcp add myserver "npx -y some-mcp-server"` registers one for every project.
+`nobelagentic mcp add myserver "npx -y some-mcp-server"` registers one for every project.
 
 ## Handoffs
 
@@ -89,10 +89,10 @@ Agent(model=MyProvider())               # bring your own
 ## CLI
 
 ```
-swarmagents run "What is 15% of 240?"
-swarmagents chat --tools web,files --mcp github
-swarmagents tools list
-swarmagents mcp list | add
+nobelagentic run "What is 15% of 240?"
+nobelagentic chat --tools web,files --mcp github
+nobelagentic tools list
+nobelagentic mcp list | add
 ```
 
 ## Roadmap
@@ -100,12 +100,12 @@ swarmagents mcp list | add
 - **v0.1** ✅ provider layer · `@tool` · ReAct loop · streaming · packs · MCP client · handoffs · CLI
 - **v0.2** graph kernel (nodes, typed state, checkpoints, resume) · `Agent` re-based on it
 - **v0.3** `Crew` API · memory · guardrails · OpenTelemetry tracing · cost tracking
-- **v0.4** TypeScript port from the shared spec · MCP *server* mode (`swarmagents serve --mcp`) · tool registry (`swarmagents add tool/weather`)
+- **v0.4** TypeScript port from the shared spec · MCP *server* mode (`nobelagentic serve --mcp`) · tool registry (`nobelagentic add tool/weather`)
 
 ## Layout
 
 ```
-swarmagents/
+nobelagentic/
   agent.py        the ReAct loop + handoffs
   tools.py        @tool → JSON schema
   types.py        provider-neutral messages & events

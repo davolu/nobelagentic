@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Getting started — Swarm Agents docs</title>
+<title>Getting started — NobelAgentic docs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
@@ -12,19 +12,19 @@
 <body>
 <div class="wrap">
 <header class="top">
-  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>Swarm Agents</a>
-  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/davolu/swarm-agents">GitHub</a></nav>
+  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>NobelAgentic</a>
+  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/davolu/nobelagentic">GitHub</a></nav>
 </header>
 <div class="docs">
-  <aside><h4>Documentation</h4><a href="/docs/" aria-current=page>Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/roadmap">Roadmap</a></aside>
+  <aside><h4>Documentation</h4><a href="/docs/" aria-current=page>Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap">Roadmap</a></aside>
   <article><h1>Getting started</h1>
-<p>Swarm Agents is an agent framework with one rule: you should never have to learn more of it than the task needs. Start with one agent. Add tools, MCP servers, handoffs, crews or graphs only when they earn their place.</p>
+<p>NobelAgentic is an agent framework with one rule: you should never have to learn more of it than the task needs. Start with one agent. Add tools, MCP servers, handoffs, crews or graphs only when they earn their place.</p>
 <h2>Install</h2>
 <p>Python:</p>
-<pre><code class="lang-bash">pip install &quot;swarmagents[anthropic]&quot;     # or [openai], [all]
+<pre><code class="lang-bash">pip install &quot;nobelagentic[anthropic]&quot;     # or [openai], [all]
 </code></pre>
 <p>TypeScript:</p>
-<pre><code class="lang-bash">npm install swarmagents @anthropic-ai/sdk   # or openai
+<pre><code class="lang-bash">npm install nobelagentic @anthropic-ai/sdk   # or openai
 </code></pre>
 <p>Set one API key and you're done — the model is picked from whatever key is present:</p>
 <pre><code class="lang-bash">export ANTHROPIC_API_KEY=sk-ant-...    # or OPENAI_API_KEY, GEMINI_API_KEY
@@ -32,7 +32,7 @@
 <p>No key? Run a local model: <code>model="ollama:llama3.1"</code>.</p>
 <h2>Your first agent</h2>
 <p>Python:</p>
-<pre><code class="lang-python">from swarmagents import Agent, tool
+<pre><code class="lang-python">from nobelagentic import Agent, tool
 
 @tool
 def get_weather(city: str) -&gt; str:
@@ -43,7 +43,7 @@ agent = Agent(&quot;You help plan trips&quot;, tools=[get_weather, &quot;web&quo
 print(agent.run(&quot;What's the weather in Lagos and what time is it there?&quot;))
 </code></pre>
 <p>TypeScript:</p>
-<pre><code class="lang-ts">import { Agent, tool, z } from &quot;swarmagents&quot;;
+<pre><code class="lang-ts">import { Agent, tool, z } from &quot;nobelagentic&quot;;
 
 const getWeather = tool({
   name: &quot;get_weather&quot;,

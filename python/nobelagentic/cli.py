@@ -1,9 +1,9 @@
-"""swarmagents CLI.
+"""nobelagentic CLI.
 
-    swarmagents run "What's 15% of 240?"         # one-shot with all safe packs
-    swarmagents chat --tools web,files           # interactive
-    swarmagents tools list
-    swarmagents mcp list / add <name> <command> [args...]
+    nobelagentic run "What's 15% of 240?"         # one-shot with all safe packs
+    nobelagentic chat --tools web,files           # interactive
+    nobelagentic tools list
+    nobelagentic mcp list / add <name> <command> [args...]
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from rich.table import Table
 from . import __version__
 from .types import Handoff, RunEnd, TextDelta, ToolCallEnd, ToolCallStart
 
-app = typer.Typer(help="swarmagents — agents that get out of your way.", no_args_is_help=True)
+app = typer.Typer(help="nobelagentic — agents that get out of your way.", no_args_is_help=True)
 tools_app = typer.Typer(help="Inspect built-in tool packs.")
 mcp_app = typer.Typer(help="Manage MCP servers.")
 app.add_typer(tools_app, name="tools")
@@ -63,7 +63,7 @@ def chat(tools: str = _SAFE_DEFAULT, model: str | None = None, mcp: str | None =
     from .types import Message
     agent = _build(instructions, tools, model, mcp)
     history: list[Message] = []
-    console.print(f"[bold]swarmagents {__version__}[/bold] · {agent.provider.name}:{agent.provider.model} · tools: {', '.join(agent.tools) or 'none'}")
+    console.print(f"[bold]nobelagentic {__version__}[/bold] · {agent.provider.name}:{agent.provider.model} · tools: {', '.join(agent.tools) or 'none'}")
     while True:
         try:
             text = console.input("[bold cyan]you ›[/bold cyan] ")
@@ -105,7 +105,7 @@ def mcp_list():
 
 @mcp_app.command("add")
 def mcp_add(name: str, command: str):
-    """Register an MCP server:  swarmagents mcp add myserver "npx -y some-mcp-server --flag"  (or a URL)."""
+    """Register an MCP server:  nobelagentic mcp add myserver "npx -y some-mcp-server --flag"  (or a URL)."""
     from .mcp import add_server
     if command.startswith("http"):
         add_server(name, {"url": command})

@@ -29,7 +29,7 @@ class OpenAICompatProvider(Provider):
         try:
             import openai
         except ImportError as e:
-            raise ProviderError("pip install openai  (or swarmagents[openai])") from e
+            raise ProviderError("pip install openai  (or nobelagentic[openai])") from e
         env_var, base_url = _VENDORS[vendor]
         api_key = kwargs.get("api_key") or (os.environ.get(env_var) if env_var else "ollama")
         if not api_key:

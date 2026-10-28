@@ -1,6 +1,6 @@
-"""swarmagents — agents that get out of your way.
+"""nobelagentic — agents that get out of your way.
 
-    from swarmagents import Agent, tool
+    from nobelagentic import Agent, tool
 
     @tool
     def add(a: int, b: int) -> int:

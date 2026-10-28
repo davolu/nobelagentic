@@ -1,14 +1,14 @@
 {
-  "name": "swarmagents",
+  "name": "nobelagentic",
   "version": "0.1.0",
-  "description": "Swarm Agents — agents that get out of your way. One kernel, three APIs, any model.",
+  "description": "NobelAgentic — agents that get out of your way. One kernel, three APIs, any model.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" }
   },
-  "bin": { "swarmagents": "./dist/cli.js" },
+  "bin": { "nobelagentic": "./dist/cli.js" },
   "files": ["dist", "README.md"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -18,8 +18,8 @@
   },
   "keywords": ["agents", "llm", "ai", "mcp", "anthropic", "openai", "framework"],
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/davolu/swarm-agents" },
-  "homepage": "https://github.com/davolu/swarm-agents#readme",
+  "repository": { "type": "git", "url": "https://github.com/davolu/nobelagentic" },
+  "homepage": "https://github.com/davolu/nobelagentic#readme",
   "engines": { "node": ">=18" },
   "dependencies": {
     "zod": "^3.23.0",

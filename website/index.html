@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Swarm Agents — agents that get out of your way</title>
+<title>NobelAgentic — agents that get out of your way</title>
 <meta name="description" content="An agent framework for Python and TypeScript. One line to start, any model, 20+ built-in tools, MCP out of the box.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -13,8 +13,8 @@
 <body>
 <div class="wrap">
 <header class="top">
-  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>Swarm Agents</a>
-  <nav class="main"><a href="/docs/">Docs</a><a href="/docs/tools">Tools</a><a href="/docs/mcp">MCP</a><a href="https://github.com/davolu/swarm-agents">GitHub</a></nav>
+  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>NobelAgentic</a>
+  <nav class="main"><a href="/docs/">Docs</a><a href="/docs/tools">Tools</a><a href="/docs/mcp">MCP</a><a href="https://github.com/davolu/nobelagentic">GitHub</a></nav>
 </header>
 
 <section class="hero" style="border-top:0">
@@ -22,14 +22,14 @@
     <h1>Agents that get out of your way.</h1>
     <p class="lede">One line to start. Any model. Tools from a type hint. Python and TypeScript, same API.</p>
     <div class="install">
-      <code>pip install swarmagents</code>
-      <code>npm i swarmagents</code>
+      <code>pip install nobelagentic</code>
+      <code>npm i nobelagentic</code>
       <a class="btn primary" href="/docs/">Read the docs</a>
     </div>
   </div>
   <div class="swarm" id="swarm">
     <canvas id="c" aria-hidden="true"></canvas>
-<pre aria-label="Example: three lines of Python to run an agent with a tool"><span class="k">from</span> swarmagents <span class="k">import</span> Agent, tool
+<pre aria-label="Example: three lines of Python to run an agent with a tool"><span class="k">from</span> nobelagentic <span class="k">import</span> Agent, tool
 
 <span class="k">@tool</span>
 <span class="k">def</span> <span class="f">get_weather</span>(city: str) -> str:
@@ -105,7 +105,7 @@ g.run(ReportState(topic=<span class="s">"..."</span>), checkpoint=<span class="s
 Agent(mcp=[<span class="s">"https://tools.example.com/mcp"</span>])
 
 <span class="c"># register one for every project</span>
-$ swarmagents mcp add weather <span class="s">"npx -y weather-mcp"</span></pre>
+$ nobelagentic mcp add weather <span class="s">"npx -y weather-mcp"</span></pre>
   </div>
 </section>
 
@@ -118,7 +118,7 @@ $ swarmagents mcp add weather <span class="s">"npx -y weather-mcp"</span></pre>
 <section>
   <h2>How it compares</h2>
   <table class="compare">
-    <thead><tr><th></th><th>Swarm Agents</th><th>OpenAI Agents SDK</th><th>CrewAI</th><th>LangGraph</th></tr></thead>
+    <thead><tr><th></th><th>NobelAgentic</th><th>OpenAI Agents SDK</th><th>CrewAI</th><th>LangGraph</th></tr></thead>
     <tbody>
       <tr><td>Lines to a working agent with a tool</td><td class="yes">~6</td><td>~12</td><td>~25</td><td>~40</td></tr>
       <tr><td>Python and TypeScript, same API</td><td class="yes">Yes</td><td>Yes</td><td>Python</td><td>Yes</td></tr>
@@ -132,8 +132,8 @@ $ swarmagents mcp add weather <span class="s">"npx -y weather-mcp"</span></pre>
 </section>
 
 <footer>
-  <span>Swarm Agents · MIT licensed</span>
-  <span><a href="/docs/">Docs</a> · <a href="https://github.com/davolu/swarm-agents">GitHub</a> · <a href="https://pypi.org/project/swarmagents/">PyPI</a> · <a href="https://www.npmjs.com/package/swarmagents">npm</a></span>
+  <span>NobelAgentic · MIT licensed</span>
+  <span><a href="/docs/">Docs</a> · <a href="https://github.com/davolu/nobelagentic">GitHub</a> · <a href="https://pypi.org/project/nobelagentic/">PyPI</a> · <a href="https://www.npmjs.com/package/nobelagentic">npm</a></span>
 </footer>
 </div>
 

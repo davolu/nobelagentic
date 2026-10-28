@@ -1,9 +1,9 @@
-# Swarm Agents
+# NobelAgentic
 
 **Agents that get out of your way.** One kernel, three APIs, any model — in Python and TypeScript with the same API.
 
 ```python
-from swarmagents import Agent, tool
+from nobelagentic import Agent, tool
 
 @tool
 def get_weather(city: str) -> str:
@@ -14,7 +14,7 @@ print(Agent("You help plan trips", tools=[get_weather, "web"]).run("Weather in L
 ```
 
 ```ts
-import { Agent, tool, z } from "swarmagents";
+import { Agent, tool, z } from "nobelagentic";
 
 const getWeather = tool({ name: "get_weather", description: "Current weather for a city",
   parameters: z.object({ city: z.string() }), execute: ({ city }) => `${city}: 31°C, humid` });
@@ -24,8 +24,8 @@ console.log(await new Agent("You help plan trips", { tools: [getWeather, "web"] 
 
 | | |
 |---|---|
-| Install | `pip install swarmagents` · `npm i swarmagents` |
-| Docs | https://swarmagents.vercel.app |
+| Install | `pip install nobelagentic` · `npm i nobelagentic` |
+| Docs | https://nobelagentic.vercel.app |
 | Python package | [`python/`](python/) |
 | TypeScript package | [`typescript/`](typescript/) |
 | Website + docs source | [`website/`](website/) |
@@ -36,9 +36,9 @@ console.log(await new Agent("You help plan trips", { tools: [getWeather, "web"] 
 - One provider interface — Anthropic natively, plus OpenAI, Gemini, Ollama, Groq, OpenRouter and Together through one OpenAI-compatible adapter; auto-picks a model from your env
 - The agent loop — real token streaming, parallel tool calls, tool errors fed back to the model, `max_steps` guard
 - Six built-in tool packs (`web` `files` `shell` `time` `math` `data`), lazy-loaded by name
-- MCP client with a registry of well-known servers plus your own in `~/.swarmagents/mcp.json`
+- MCP client with a registry of well-known servers plus your own in `~/.nobelagentic/mcp.json`
 - Handoffs between agents
-- A CLI: `swarmagents run | chat | tools list | mcp add`
+- A CLI: `nobelagentic run | chat | tools list | mcp add`
 - Offline test suites in both languages against a scripted fake provider
 
 ## Roadmap
