@@ -1,0 +1,33 @@
+"""Built-in tool packs. Lazy-loaded by name: Agent(tools=["web", "files"]).
+
+Each pack is a module exposing a `TOOLS` list. Add a pack by dropping a file here
+and listing it in PACKS.
+"""
+from __future__ import annotations
+
+import importlib
+
+from ..tools import Tool
+
+PACKS: dict[str, str] = {
+    "web": "swarmagents.packs.web",
+    "files": "swarmagents.packs.files",
+    "shell": "swarmagents.packs.shell",
+    "time": "swarmagents.packs.time_",
+    "math": "swarmagents.packs.math_",
+    "data": "swarmagents.packs.data",
+}
+
+
+def load_pack(name: str) -> list[Tool]:
+    if name not in PACKS:
+        raise KeyError(f"Unknown tool pack '{name}'. Available: {', '.join(PACKS)}")
+    mod = importlib.import_module(PACKS[name])
+    tools: list[Tool] = list(mod.TOOLS)
+    for t in tools:
+        t.pack = name
+    return tools
+
+
+def all_tools() -> dict[str, list[Tool]]:
+    return {name: load_pack(name) for name in PACKS}

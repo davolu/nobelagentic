@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MCP — Swarm Agents docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='4' fill='%23D89B00'/%3E%3Ccircle cx='4' cy='7' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='22' cy='6' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='6' cy='21' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='21' cy='20' r='2.4' fill='%23161A22'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>Swarm Agents</a>
+  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/GITHUB_OWNER/GITHUB_REPO">GitHub</a></nav>
+</header>
+<div class="docs">
+  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp" aria-current=page>MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/roadmap">Roadmap</a></aside>
+  <article><h1>MCP</h1>
+<p>Any Model Context Protocol server becomes a set of tools, indistinguishable from native ones.</p>
+<pre><code class="lang-python">Agent(&quot;...&quot;, mcp=[&quot;github&quot;, &quot;postgres&quot;])
+Agent(&quot;...&quot;, mcp=[&quot;https://tools.example.com/mcp&quot;])
+Agent(&quot;...&quot;, mcp=[{&quot;command&quot;: &quot;npx&quot;, &quot;args&quot;: [&quot;-y&quot;, &quot;some-mcp-server&quot;]}])
+</code></pre>
+<h2>Registry</h2>
+<p>These names work out of the box:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Server</th>
+<th>Needs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filesystem</code></td>
+<td><code>@modelcontextprotocol/server-filesystem</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>github</code></td>
+<td><code>@modelcontextprotocol/server-github</code></td>
+<td><code>GITHUB_PERSONAL_ACCESS_TOKEN</code></td>
+</tr>
+<tr>
+<td><code>postgres</code></td>
+<td><code>@modelcontextprotocol/server-postgres</code></td>
+<td><code>DATABASE_URL</code></td>
+</tr>
+<tr>
+<td><code>playwright</code></td>
+<td><code>@playwright/mcp</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>fetch</code></td>
+<td><code>mcp-server-fetch</code></td>
+<td><code>uvx</code></td>
+</tr>
+<tr>
+<td><code>memory</code></td>
+<td><code>@modelcontextprotocol/server-memory</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>slack</code></td>
+<td><code>@modelcontextprotocol/server-slack</code></td>
+<td><code>SLACK_BOT_TOKEN</code>, <code>SLACK_TEAM_ID</code></td>
+</tr>
+</tbody>
+</table>
+<p>A missing credential fails at agent construction with the variable's name, not halfway through a run.</p>
+<h2>Your own servers</h2>
+<pre><code class="lang-bash">swarmagents mcp add weather &quot;npx -y weather-mcp --units metric&quot;
+swarmagents mcp add internal https://mcp.internal.example.com/mcp
+</code></pre>
+<p>These are saved to <code>~/.swarmagents/mcp.json</code> and available in every project by name.</p>
+<h2>Roadmap</h2>
+<p>MCP <em>server</em> mode — exposing an agent or tool pack as an MCP server with <code>swarmagents serve --mcp</code> — is planned for v0.4, so anything you build here plugs into Claude Code, Cursor and other MCP hosts.</p><div class="pager"><a href="/docs/models">← Models</a><a href="/docs/handoffs">Handoffs →</a></div></article>
+</div>
+</div>
+</body>
+</html>

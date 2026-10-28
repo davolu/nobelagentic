@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Swarm Agents — agents that get out of your way</title>
+<meta name="description" content="An agent framework for Python and TypeScript. One line to start, any model, 20+ built-in tools, MCP out of the box.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='4' fill='%23D89B00'/%3E%3Ccircle cx='4' cy='7' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='22' cy='6' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='6' cy='21' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='21' cy='20' r='2.4' fill='%23161A22'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>Swarm Agents</a>
+  <nav class="main"><a href="/docs/">Docs</a><a href="/docs/tools">Tools</a><a href="/docs/mcp">MCP</a><a href="https://github.com/GITHUB_OWNER/GITHUB_REPO">GitHub</a></nav>
+</header>
+
+<section class="hero" style="border-top:0">
+  <div>
+    <h1>Agents that get out of your way.</h1>
+    <p class="lede">One line to start. Any model. Tools from a type hint. Python and TypeScript, same API.</p>
+    <div class="install">
+      <code>pip install swarmagents</code>
+      <code>npm i swarmagents</code>
+      <a class="btn primary" href="/docs/">Read the docs</a>
+    </div>
+  </div>
+  <div class="swarm" id="swarm">
+    <canvas id="c" aria-hidden="true"></canvas>
+<pre aria-label="Example: three lines of Python to run an agent with a tool"><span class="k">from</span> swarmagents <span class="k">import</span> Agent, tool
+
+<span class="k">@tool</span>
+<span class="k">def</span> <span class="f">get_weather</span>(city: str) -> str:
+    <span class="s">"""Current weather for a city."""</span>
+    ...
+
+agent = Agent(<span class="s">"You help plan trips"</span>,
+              tools=[get_weather, <span class="s">"web"</span>])
+agent.run(<span class="s">"Plan a 3-day trip to Lagos"</span>)</pre>
+  </div>
+</section>
+
+<section>
+  <div class="two">
+    <div>
+      <h2>Complexity is opt-in, never required.</h2>
+      <p class="lede" style="font-size:18px;max-width:40ch">Most frameworks make you learn their graph, their crew, or their chain on day one. Here you start with one agent and reach for more structure only when you need it. All three levels run on the same kernel, so streaming, tracing and checkpoints behave identically everywhere.</p>
+    </div>
+    <div class="levels">
+      <div role="tablist" aria-label="API levels">
+        <button role="tab" aria-selected="true" aria-controls="t-agent" id="b-agent">Agent<small>one line</small></button>
+        <button role="tab" aria-selected="false" aria-controls="t-crew" id="b-crew">Crew<small>roles and tasks</small></button>
+        <button role="tab" aria-selected="false" aria-controls="t-graph" id="b-graph">Graph<small>full control</small></button>
+      </div>
+      <div>
+<pre role="tabpanel" id="t-agent" aria-labelledby="b-agent">researcher = Agent(
+    <span class="s">"Find and summarize sources"</span>,
+    tools=[<span class="s">"web"</span>, <span class="s">"files"</span>],
+    mcp=[<span class="s">"github"</span>],
+)
+researcher.run(<span class="s">"What changed in Python 3.14?"</span>)</pre>
+<pre role="tabpanel" id="t-crew" aria-labelledby="b-crew" hidden><span class="c"># v0.3</span>
+crew = Crew(
+    agents=[researcher, writer, editor],
+    process=<span class="s">"sequential"</span>,
+    memory=<span class="k">True</span>,
+)
+crew.run(<span class="s">"Write a report on African fintech"</span>)</pre>
+<pre role="tabpanel" id="t-graph" aria-labelledby="b-graph" hidden><span class="c"># v0.2</span>
+g = Graph(state=ReportState)
+g.node(<span class="s">"research"</span>, researcher)
+g.node(<span class="s">"write"</span>, writer)
+g.edge(<span class="s">"research"</span>, <span class="s">"write"</span>)
+g.edge(<span class="s">"write"</span>, <span class="k">lambda</span> s: <span class="s">"research"</span> <span class="k">if</span> s.needs_more <span class="k">else</span> END)
+g.run(ReportState(topic=<span class="s">"..."</span>), checkpoint=<span class="s">"run-42"</span>)</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Tools from a type hint. Packs by name.</h2>
+  <p class="lede" style="font-size:18px;max-width:46ch">A function with type hints and a docstring is a tool. Built-in packs load lazily, declare what credentials they need, and stay out of the context window until you ask for them.</p>
+  <div class="packs">
+    <div><h3><code>web</code></h3><p>Search, fetch and clean pages, raw HTTP requests.</p></div>
+    <div><h3><code>files</code></h3><p>Read, write, list, regex-search — sandboxed to a root.</p></div>
+    <div><h3><code>shell</code></h3><p>Commands and in-process code. Opt-in only.</p></div>
+    <div><h3><code>time</code></h3><p>Now in any timezone, date math, conversions.</p></div>
+    <div><h3><code>math</code></h3><p>Safe expression evaluation and unit conversion.</p></div>
+    <div><h3><code>data</code></h3><p>JSON paths, CSV in and out, quick column stats.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="two">
+    <div>
+      <h2>Any MCP server is a tool pack.</h2>
+      <p class="lede" style="font-size:18px;max-width:40ch">Name a server and its tools appear next to your own, indistinguishable from native ones. A built-in registry covers GitHub, Postgres, Playwright, the filesystem and more; add your own with one command.</p>
+    </div>
+<pre>Agent(mcp=[<span class="s">"github"</span>, <span class="s">"postgres"</span>])
+
+<span class="c"># or a remote server</span>
+Agent(mcp=[<span class="s">"https://tools.example.com/mcp"</span>])
+
+<span class="c"># register one for every project</span>
+$ swarmagents mcp add weather <span class="s">"npx -y weather-mcp"</span></pre>
+  </div>
+</section>
+
+<section>
+  <h2>One provider interface. Every model behind it.</h2>
+  <p class="lede" style="font-size:18px;max-width:46ch">Set an API key and the model is picked for you. Name a model and the provider is inferred from it. Swap vendors without touching your agent code.</p>
+  <div class="providers"><span>Anthropic</span><span>OpenAI</span><span>Gemini</span><span>Ollama</span><span>Groq</span><span>OpenRouter</span><span>Together</span><span>Bring your own</span></div>
+</section>
+
+<section>
+  <h2>How it compares</h2>
+  <table class="compare">
+    <thead><tr><th></th><th>Swarm Agents</th><th>OpenAI Agents SDK</th><th>CrewAI</th><th>LangGraph</th></tr></thead>
+    <tbody>
+      <tr><td>Lines to a working agent with a tool</td><td class="yes">~6</td><td>~12</td><td>~25</td><td>~40</td></tr>
+      <tr><td>Python and TypeScript, same API</td><td class="yes">Yes</td><td>Yes</td><td>Python</td><td>Yes</td></tr>
+      <tr><td>Any provider without an adapter package</td><td class="yes">Yes</td><td>OpenAI-first</td><td>Via LiteLLM</td><td>Via LangChain</td></tr>
+      <tr><td>Built-in tool packs</td><td class="yes">20+, growing</td><td>Few</td><td>Many</td><td>Via LangChain</td></tr>
+      <tr><td>MCP client</td><td class="yes">By name</td><td>Yes</td><td>Yes</td><td>Adapter</td></tr>
+      <tr><td>Graph, crew and single-agent in one runtime</td><td class="yes">Yes</td><td>Agent + handoffs</td><td>Crew + flows</td><td>Graph</td></tr>
+    </tbody>
+  </table>
+  <p style="color:var(--muted);font-size:14px;margin-top:10px">Line counts are from each project's own quickstart as of October 2026. Crew and Graph APIs are on the roadmap for v0.2–0.3.</p>
+</section>
+
+<footer>
+  <span>Swarm Agents · MIT licensed</span>
+  <span><a href="/docs/">Docs</a> · <a href="https://github.com/GITHUB_OWNER/GITHUB_REPO">GitHub</a> · <a href="https://pypi.org/project/swarmagents/">PyPI</a> · <a href="https://www.npmjs.com/package/swarmagents">npm</a></span>
+</footer>
+</div>
+
+<script>
+// Tabs
+document.querySelectorAll('[role=tab]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[role=tab]').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('[role=tabpanel]').forEach(p=>p.hidden=p.id!==b.getAttribute('aria-controls'));
+}));
+// Hero: a swarm of dots drifts, then settles into rows — once.
+(()=>{
+  const wrap=document.getElementById('swarm'),cv=document.getElementById('c'),ctx=cv.getContext('2d');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const dpr=devicePixelRatio||1;const W=wrap.clientWidth,H=wrap.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.scale(dpr,dpr);
+  const N=140,dots=[];const rows=5,cols=28,gx=W/(cols+1),gy=28,y0=H-rows*gy-24;
+  for(let i=0;i<N;i++){const r=i%rows,c=(i/rows|0)%cols;dots.push({x:Math.random()*W,y:Math.random()*H*0.8,vx:(Math.random()-.5)*1.6,vy:(Math.random()-.5)*1.6,tx:gx*(c+1),ty:y0+r*gy,amber:i%23===0});}
+  let t0=performance.now();const settleAt=reduce?0:1400,dur=reduce?1:900;
+  function frame(now){const el=now-t0;ctx.clearRect(0,0,W,H);
+    for(const d of dots){
+      if(el<settleAt){d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>W)d.vx*=-1;if(d.y<0||d.y>H*0.85)d.vy*=-1;}
+      else{const k=Math.min(1,(el-settleAt)/dur),e=1-Math.pow(1-k,3);d.x+=(d.tx-d.x)*e*.2;d.y+=(d.ty-d.y)*e*.2;}
+      ctx.beginPath();ctx.arc(d.x,d.y,el<settleAt?2.2:1.8,0,7);ctx.fillStyle=d.amber?'#D89B00':'#9AA3B2';ctx.fill();
+    }
+    if(el<settleAt+dur+200)requestAnimationFrame(frame);else{wrap.classList.add('done');setTimeout(()=>cv.style.opacity=0,600);}
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

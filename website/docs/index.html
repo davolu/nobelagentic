@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Getting started — Swarm Agents docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='4' fill='%23D89B00'/%3E%3Ccircle cx='4' cy='7' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='22' cy='6' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='6' cy='21' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='21' cy='20' r='2.4' fill='%23161A22'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>Swarm Agents</a>
+  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/GITHUB_OWNER/GITHUB_REPO">GitHub</a></nav>
+</header>
+<div class="docs">
+  <aside><h4>Documentation</h4><a href="/docs/" aria-current=page>Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/roadmap">Roadmap</a></aside>
+  <article><h1>Getting started</h1>
+<p>Swarm Agents is an agent framework with one rule: you should never have to learn more of it than the task needs. Start with one agent. Add tools, MCP servers, handoffs, crews or graphs only when they earn their place.</p>
+<h2>Install</h2>
+<p>Python:</p>
+<pre><code class="lang-bash">pip install &quot;swarmagents[anthropic]&quot;     # or [openai], [all]
+</code></pre>
+<p>TypeScript:</p>
+<pre><code class="lang-bash">npm install swarmagents @anthropic-ai/sdk   # or openai
+</code></pre>
+<p>Set one API key and you're done — the model is picked from whatever key is present:</p>
+<pre><code class="lang-bash">export ANTHROPIC_API_KEY=sk-ant-...    # or OPENAI_API_KEY, GEMINI_API_KEY
+</code></pre>
+<p>No key? Run a local model: <code>model="ollama:llama3.1"</code>.</p>
+<h2>Your first agent</h2>
+<p>Python:</p>
+<pre><code class="lang-python">from swarmagents import Agent, tool
+
+@tool
+def get_weather(city: str) -&gt; str:
+    &quot;&quot;&quot;Current weather for a city.&quot;&quot;&quot;
+    return f&quot;{city}: 31°C, humid&quot;
+
+agent = Agent(&quot;You help plan trips&quot;, tools=[get_weather, &quot;web&quot;, &quot;time&quot;])
+print(agent.run(&quot;What's the weather in Lagos and what time is it there?&quot;))
+</code></pre>
+<p>TypeScript:</p>
+<pre><code class="lang-ts">import { Agent, tool, z } from &quot;swarmagents&quot;;
+
+const getWeather = tool({
+  name: &quot;get_weather&quot;,
+  description: &quot;Current weather for a city&quot;,
+  parameters: z.object({ city: z.string() }),
+  execute: ({ city }) =&gt; `${city}: 31°C, humid`,
+});
+
+const agent = new Agent(&quot;You help plan trips&quot;, { tools: [getWeather, &quot;web&quot;, &quot;time&quot;] });
+console.log(await agent.run(&quot;What's the weather in Lagos?&quot;));
+</code></pre>
+<p>What happened: the model saw your tool's schema (built from the type hints and docstring), decided to call it, the framework ran it, fed the result back, and the model wrote the answer. That loop runs until the model stops calling tools or hits <code>max_steps</code>.</p>
+<h2>Streaming</h2>
+<p><code>run()</code> returns the finished result. <code>stream()</code> yields events as they happen — text deltas, tool calls, handoffs — so you can render progress live.</p>
+<pre><code class="lang-python">async for ev in agent.stream(&quot;...&quot;):
+    match ev:
+        case TextDelta(text): print(text, end=&quot;&quot;)
+        case ToolCallStart(call): print(&quot;calling&quot;, call.name)
+</code></pre>
+<h2>Next</h2>
+<ul>
+<li><a href="/docs/tools">Tools</a> — writing your own, and the built-in packs</li>
+<li><a href="/docs/models">Models</a> — choosing and switching providers</li>
+<li><a href="/docs/mcp">MCP</a> — plugging in any MCP server</li>
+<li><a href="/docs/handoffs">Handoffs</a> — routing between agents</li>
+<li><a href="/docs/cli">CLI</a> — run and chat without writing code</li>
+</ul><div class="pager"><span></span><a href="/docs/tools">Tools →</a></div></article>
+</div>
+</div>
+</body>
+</html>

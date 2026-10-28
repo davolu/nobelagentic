@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tools — Swarm Agents docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='4' fill='%23D89B00'/%3E%3Ccircle cx='4' cy='7' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='22' cy='6' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='6' cy='21' r='2.4' fill='%23161A22'/%3E%3Ccircle cx='21' cy='20' r='2.4' fill='%23161A22'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>Swarm Agents</a>
+  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/GITHUB_OWNER/GITHUB_REPO">GitHub</a></nav>
+</header>
+<div class="docs">
+  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools" aria-current=page>Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/roadmap">Roadmap</a></aside>
+  <article><h1>Tools</h1>
+<p>A tool is a function the model can call. You never write a JSON schema.</p>
+<h2>Your own tools</h2>
+<p>Python builds the schema from type hints and the docstring. An <code>Args:</code> block becomes per-parameter descriptions.</p>
+<pre><code class="lang-python">from swarmagents import tool
+
+@tool
+def search_orders(customer_id: str, status: str = &quot;open&quot;, limit: int = 10) -&gt; list[dict]:
+    &quot;&quot;&quot;Find a customer's orders.
+
+    Args:
+        customer_id: The customer's ID.
+        status: open, shipped or cancelled.
+        limit: Max rows to return.
+    &quot;&quot;&quot;
+    ...
+</code></pre>
+<p>Async functions work the same way. Return anything JSON-serialisable; it's stringified for the model.</p>
+<p>TypeScript uses a <code>zod</code> schema, which is the documentation the model sees:</p>
+<pre><code class="lang-ts">import { tool, z } from &quot;swarmagents&quot;;
+
+const searchOrders = tool({
+  name: &quot;search_orders&quot;,
+  description: &quot;Find a customer's orders&quot;,
+  parameters: z.object({
+    customer_id: z.string(),
+    status: z.enum([&quot;open&quot;, &quot;shipped&quot;, &quot;cancelled&quot;]).default(&quot;open&quot;),
+    limit: z.number().int().default(10),
+  }),
+  execute: async ({ customer_id, status, limit }) =&gt; { /* ... */ },
+});
+</code></pre>
+<h2>Errors</h2>
+<p>A tool that throws does not crash the run. The error text goes back to the model as the tool result, so it can retry, pick another tool, or explain. The same happens for an unknown tool name or bad arguments.</p>
+<h2>Built-in packs</h2>
+<p>Load a pack by name: <code>tools=["web", "files"]</code>. Packs are lazy — nothing is imported until you ask.</p>
+<table>
+<thead>
+<tr>
+<th>Pack</th>
+<th>Tools</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>web</code></td>
+<td><code>web_search</code>, <code>fetch_url</code>, <code>http_request</code></td>
+<td>No API key needed</td>
+</tr>
+<tr>
+<td><code>files</code></td>
+<td><code>read_file</code>, <code>write_file</code>, <code>append_file</code>, <code>list_dir</code>, <code>search_files</code>, <code>delete_file</code></td>
+<td>Sandboxed to <code>SWARMAGENTS_FILES_ROOT</code> (default: cwd)</td>
+</tr>
+<tr>
+<td><code>shell</code></td>
+<td><code>run_command</code>, <code>run_python</code> / <code>run_javascript</code></td>
+<td>Opt-in only. Never loaded by default.</td>
+</tr>
+<tr>
+<td><code>time</code></td>
+<td><code>now</code>, <code>date_add</code>, <code>convert_timezone</code></td>
+<td>IANA timezones</td>
+</tr>
+<tr>
+<td><code>math</code></td>
+<td><code>calculate</code>, <code>convert_units</code></td>
+<td>Safe expression evaluation</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>parse_json</code>, <code>json_query</code>, <code>csv_to_json</code>, <code>json_to_csv</code>, <code>summarize_table</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><code>swarmagents tools list</code> prints every tool with its description.</p>
+<h2>Credentials</h2>
+<p>A tool can declare the env vars it needs. Loading it without them fails immediately with a message naming the variable, rather than failing mid-run.</p>
+<pre><code class="lang-python">@tool(requires=[&quot;STRIPE_KEY&quot;])
+def refund(charge_id: str) -&gt; str: ...
+</code></pre><div class="pager"><a href="/docs/">← Getting started</a><a href="/docs/models">Models →</a></div></article>
+</div>
+</div>
+</body>
+</html>
