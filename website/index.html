@@ -14,7 +14,7 @@
 <div class="wrap">
 <header class="top">
   <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>NobelAgentic</a>
-  <nav class="main"><a href="/docs/">Docs</a><a href="/docs/tools">Tools</a><a href="/docs/mcp">MCP</a><a href="https://github.com/davolu/nobelagentic">GitHub</a></nav>
+  <nav class="main"><a href="/docs/">Docs</a><a href="/docs/examples">Examples</a><a href="/docs/mcp">MCP</a><a href="https://github.com/davolu/nobelagentic">GitHub</a></nav>
 </header>
 
 <section class="hero" style="border-top:0">
@@ -116,6 +116,32 @@ $ nobelagentic mcp add weather <span class="s">"npx -y weather-mcp"</span></pre>
 </section>
 
 <section>
+  <h2>Everything an agent needs to ship.</h2>
+  <p class="lede" style="font-size:18px;max-width:50ch">What's here today works today. What's coming has a version on it — no vaporware, the <a href="/docs/roadmap">roadmap</a> is public.</p>
+  <div class="packs feature-grid">
+    <div><h3>Streaming events</h3><p>Token deltas, tool calls and usage as one typed event stream — the same in Python and TypeScript.</p></div>
+    <div><h3>Handoffs</h3><p>Agents route to agents. A triage agent and two specialists is eight lines.</p></div>
+    <div><h3>Parallel tool calls</h3><p>When the model asks for three tools at once, they run at once.</p></div>
+    <div><h3>Structured outputs <span class="badge">v0.2</span></h3><p>Get a validated Pydantic model or zod object back, not a string to parse.</p></div>
+    <div><h3>Sessions <span class="badge">v0.2</span></h3><p>Multi-turn conversations with pluggable storage. No hand-rolled history.</p></div>
+    <div><h3>Human-in-the-loop <span class="badge">v0.2</span></h3><p>Checkpoint before a risky tool runs, resume after a human approves.</p></div>
+    <div><h3>Memory &amp; knowledge <span class="badge">v0.3</span></h3><p>Vector memory, plus retrieval over your own docs with one argument.</p></div>
+    <div><h3>Observability <span class="badge">v0.3</span></h3><p>OpenTelemetry traces and per-run cost tracking. See exactly what your agents are doing.</p></div>
+    <div><h3>Evals <span class="badge">v0.4</span></h3><p>Record a real run once, replay it offline in CI — assert on tool calls, outputs and cost.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Agents people actually ship.</h2>
+  <p class="lede" style="font-size:18px;max-width:46ch">The <a href="/docs/examples">Examples</a> page walks through each of these — complete, runnable, webhook included.</p>
+  <div class="packs">
+    <div><h3>WhatsApp support agent</h3><p>WhatsApp Cloud API webhook → agent with an order-lookup tool → reply. One file with FastAPI.</p><a class="more" href="/docs/examples">Read the recipe →</a></div>
+    <div><h3>A support team</h3><p>Billing and tech specialists behind a triage agent that routes with handoffs and never answers itself.</p><a class="more" href="/docs/examples">Read the recipe →</a></div>
+    <div><h3>Telegram bot in TypeScript</h3><p>Long-polling bot with a live FX-rate tool. No bot framework, ~25 lines.</p><a class="more" href="/docs/examples">Read the recipe →</a></div>
+  </div>
+</section>
+
+<section>
   <h2>How it compares</h2>
   <table class="compare">
     <thead><tr><th></th><th>NobelAgentic</th><th>OpenAI Agents SDK</th><th>CrewAI</th><th>LangGraph</th></tr></thead>
@@ -129,6 +155,30 @@ $ nobelagentic mcp add weather <span class="s">"npx -y weather-mcp"</span></pre>
     </tbody>
   </table>
   <p style="color:var(--muted);font-size:14px;margin-top:10px">Line counts are from each project's own quickstart as of October 2026. Crew and Graph APIs are on the roadmap for v0.2–0.3.</p>
+</section>
+
+<section>
+  <h2>Questions people ask</h2>
+  <div class="faq">
+    <details><summary>What is NobelAgentic?</summary><p>An open-source (MIT) agent framework for Python and TypeScript. One kernel with three API levels — <code>Agent</code>, <code>Crew</code>, <code>Graph</code> — so you start with one line and add structure only when you need it.</p></details>
+    <details><summary>Which models and providers does it support?</summary><p>Anthropic, OpenAI, Gemini, Ollama, Groq, OpenRouter, Together — any OpenAI-compatible host — or bring your own provider class. Set an API key and a model is picked for you; name a model and the provider is inferred.</p></details>
+    <details><summary>Does it support MCP?</summary><p>Yes, as a client: name a registry server (<code>mcp=["github"]</code>), point at a remote URL, or spawn a local one. MCP <em>server</em> mode — your agents as tools for any MCP client — lands in v0.4.</p></details>
+    <details><summary>How do agents keep memory and context?</summary><p>Today you prepend recent history (the <a href="/docs/examples">Examples</a> page shows the pattern). Sessions with pluggable storage land in v0.2; vector memory and knowledge sources in v0.3.</p></details>
+    <details><summary>Python or TypeScript?</summary><p>Both, with the same API and the same event stream — <code>pip install nobelagentic</code> or <code>npm i nobelagentic</code>. The two packages are ports of one shared spec.</p></details>
+    <details><summary>How is it different from CrewAI, LangGraph or Mastra?</summary><p>Those frameworks make you learn their abstraction on day one. Here complexity is opt-in: a working agent with a tool is ~6 lines, and crews and graphs compile to the same runtime when you grow into them — streaming, tracing and checkpoints behave identically at every level.</p></details>
+    <details><summary>Is it production ready?</summary><p>v0.1 is young and the API may still move before v1. What exists is tested (offline, with a scripted fake provider) and the <a href="/docs/roadmap">roadmap</a> is deliberately boring-first: structured outputs, sessions, run limits and human-in-the-loop are next.</p></details>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Start building today.</h2>
+  <p class="lede" style="font-size:18px">An agent with a real tool, in the next five minutes.</p>
+  <div class="install">
+    <code>pip install nobelagentic</code>
+    <code>npm i nobelagentic</code>
+    <a class="btn primary" href="/docs/">Read the docs</a>
+    <a class="btn ghost" href="/docs/examples">See examples</a>
+  </div>
 </section>
 
 <footer>

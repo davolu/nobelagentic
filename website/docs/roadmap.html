@@ -19,10 +19,18 @@
   <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap" aria-current=page>Roadmap</a></aside>
   <article><h1>Roadmap</h1>
 <p><strong>v0.1 — now.</strong> Provider layer (Anthropic + every OpenAI-compatible host), <code>@tool</code>, the ReAct loop with real streaming and parallel tool calls, six tool packs, MCP client with registry, handoffs, CLI. Python and TypeScript with the same API and the same event stream.</p>
-<p><strong>v0.2 — graph kernel.</strong> Nodes, edges, typed state, checkpoints and resume. <code>Agent</code> is re-based onto it so human-in-the-loop and durable runs come for free. Native Gemini adapter.</p>
-<p><strong>v0.3 — crews and memory.</strong> <code>Crew(agents, tasks, process)</code>. Short-term and vector memory. Input and output guardrails. OpenTelemetry tracing and cost tracking.</p>
-<p><strong>v0.4 — ecosystem.</strong> MCP server mode (<code>nobelagentic serve --mcp</code>). A tool registry: <code>nobelagentic add tool/weather</code> pulls a community tool the way <code>npm</code> pulls a package. 100+ built-in tools, many as thin wrappers over maintained MCP servers.</p>
-<p>Suggest or vote on features in GitHub issues.</p><div class="pager"><a href="/docs/examples">← Examples</a><span></span></div></article>
+<p><strong>v0.2 — the production agent.</strong> The graph kernel: nodes, edges, typed state, checkpoints and resume. <code>Agent</code> is re-based onto it so human-in-the-loop approval ("pause before this tool runs, ask a human") and durable runs come for free. Plus the three things every production user asks for first:</p>
+<ul>
+<li><strong>Structured outputs</strong> — <code>Agent(..., output=MyModel)</code> returns a validated Pydantic model / zod object, not a string.</li>
+<li><strong>Sessions</strong> — <code>agent.run(msg, session="user-123")</code> with pluggable storage. Multi-turn without hand-rolling history.</li>
+<li><strong>Run limits</strong> — <code>max_turns</code>, token and cost budgets per run, tool timeouts, provider retries with backoff.</li>
+<li><strong>Agent-as-tool</strong> — <code>other.as_tool()</code>: the parent stays in control, unlike a handoff.</li>
+<li>Native Gemini adapter.</li>
+</ul>
+<p><strong>v0.3 — crews, memory, and eyes.</strong> <code>Crew(agents, tasks, process)</code>. Short-term and vector memory. Knowledge sources — point an agent at your docs (<code>knowledge=["./docs/*.pdf"]</code>) and retrieval is handled. Input and output guardrails. Multimodal input (images and files straight into <code>run()</code>). Best-in-class observability: OpenTelemetry tracing, per-run cost tracking, and a local trace viewer.</p>
+<p><strong>v0.4 — testable and everywhere.</strong> <strong>Evals</strong>: record a real run once, replay it offline forever — assert on tool calls, outputs and cost in CI. A sandboxed code executor pack (the safe version of <code>shell</code>). MCP <em>server</em> mode (<code>nobelagentic serve --mcp</code>) so your agents are tools for any MCP client. A tool registry: <code>nobelagentic add tool/weather</code> pulls a community tool the way <code>npm</code> pulls a package. 100+ built-in tools, many as thin wrappers over maintained MCP servers.</p>
+<p><strong>Non-goals, for now.</strong> Voice/realtime pipelines and hosted inference. Plenty of good products do these; we'd rather be the best framework than a mediocre platform.</p>
+<p>Suggest or vote on features in <a href="https://github.com/davolu/nobelagentic/issues">GitHub issues</a>.</p><div class="pager"><a href="/docs/examples">← Examples</a><span></span></div></article>
 </div>
 </div>
 </body>

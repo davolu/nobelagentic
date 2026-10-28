@@ -70,3 +70,18 @@ footer a{color:var(--muted)}
 .hl .mi,.hl .mf,.hl .mh,.hl .mb,.hl .mo{color:#E3B341}
 .hl .nb,.hl .bp{color:#D9B8F0}
 .hl .err{color:inherit;border:0}
+
+/* Landing additions: badges, example cards, FAQ, CTA */
+.badge{display:inline-block;vertical-align:2px;margin-left:6px;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:600;letter-spacing:.02em;background:#F3E3B3;color:var(--amber-ink);border:1px solid #E4CD8B}
+.packs a.more{display:inline-block;margin-top:8px;font-size:14px;font-weight:600;color:var(--teal);text-decoration:none}
+.packs a.more:hover{text-decoration:underline}
+.faq{margin-top:26px;border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;padding:18px 0;font-weight:600;font-size:18px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;color:var(--muted);flex-shrink:0}
+.faq details[open] summary::after{content:"–"}
+.faq details p{margin:0 0 18px;color:var(--muted);max-width:72ch}
+.cta{text-align:center;padding:72px 0}
+.cta .lede{margin:0 auto 28px;max-width:none}
+.cta .install{justify-content:center}
