@@ -1,10 +1,14 @@
 name: Publish
+# Every push to main publishes whatever version is in the package files,
+# if that version isn't on the registry yet. Bump the version = release.
 on:
   push:
-    tags: ["v*"]
-  release:
-    types: [published]
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   pypi:
     runs-on: ubuntu-latest
@@ -12,14 +16,55 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install build twine
-      - run: cd python && python -m build && twine upload dist/*
+      - name: Check whether this version is already on PyPI
+        id: check
+        run: |
+          V=$(grep -m1 '^version' python/pyproject.toml | sed 's/.*"\(.*\)"/\1/')
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          if curl -sf "https://pypi.org/pypi/swarmagents/$V/json" >/dev/null; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "swarmagents $V already on PyPI, skipping"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.check.outputs.skip == 'false'
+        run: pip install -e "python[dev]" build twine && cd python && pytest -q
+      - if: steps.check.outputs.skip == 'false'
+        run: cd python && python -m build && twine upload dist/*
         env: { TWINE_USERNAME: __token__, TWINE_PASSWORD: "${{ secrets.PYPI_API_TOKEN }}" }
+
   npm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, registry-url: https://registry.npmjs.org }
-      - run: cd typescript && npm ci && npm run build && npm publish --access public
+        with: { node-version: 20, registry-url: https://registry.npmjs.org, cache: npm, cache-dependency-path: typescript/package-lock.json }
+      - name: Check whether this version is already on npm
+        id: check
+        run: |
+          V=$(node -p "require('./typescript/package.json').version")
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          if npm view "swarmagents@$V" version >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "swarmagents@$V already on npm, skipping"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.check.outputs.skip == 'false'
+        run: cd typescript && npm ci && npm test && npm run build
+      - if: steps.check.outputs.skip == 'false'
+        run: cd typescript && npm publish --access public
         env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+
+  tag:
+    needs: [pypi, npm]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tag the release if the tag doesn't exist yet
+        run: |
+          V=$(node -p "require('./typescript/package.json').version")
+          if git ls-remote --tags origin "v$V" | grep -q .; then echo "v$V already tagged"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$V" -m "v$V" && git push origin "v$V"
+          gh release create "v$V" --title "v$V" --generate-notes
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }

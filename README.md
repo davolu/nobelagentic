@@ -55,12 +55,6 @@ cd website && python build.py          # regenerates docs/*.html from content/*.
 
 ## Release
 
-Push a tag and CI publishes both packages:
-
-```bash
-git tag v0.1.0 && git push --tags
-```
-
-Needs `PYPI_API_TOKEN` and `NPM_TOKEN` as repository secrets.
+Bump the version in `python/pyproject.toml` and `typescript/package.json`, push to `main`. CI publishes whatever version isn't on the registry yet, then tags it and creates a GitHub release. Needs `PYPI_API_TOKEN` and `NPM_TOKEN` as repository secrets.
 
 MIT licensed.
