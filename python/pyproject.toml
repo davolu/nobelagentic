@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "The agent framework that gets out of your way. One kernel, three APIs, any model."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "pydantic>=2.0",
     "httpx>=0.27",
@@ -27,7 +28,7 @@ Documentation = "https://swarmagents.vercel.app"
 swarmagents = "swarmagents.cli:app"
 
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]

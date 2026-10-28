@@ -29,7 +29,7 @@ jobs:
       - if: steps.check.outputs.skip == 'false'
         run: pip install -e "python[dev]" build twine && cd python && pytest -q
       - if: steps.check.outputs.skip == 'false'
-        run: cd python && python -m build && twine upload dist/*
+        run: cd python && python -m build && twine check dist/* && twine upload --verbose dist/*
         env: { TWINE_USERNAME: __token__, TWINE_PASSWORD: "${{ secrets.PYPI_API_TOKEN }}" }
 
   npm:
