@@ -19,13 +19,14 @@
   <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli" aria-current=page>CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap">Roadmap</a></aside>
   <article><h1>CLI</h1>
 <p>Both packages ship the same command.</p>
-<pre><code class="lang-bash">nobelagentic run &quot;What is 15% of 240?&quot;
-nobelagentic run &quot;Summarize this repo&quot; --tools files,shell --model gpt-5
-nobelagentic chat --tools web,files --mcp github
-nobelagentic tools list
-nobelagentic mcp list
-nobelagentic mcp add &lt;name&gt; &quot;&lt;command or url&gt;&quot;
-</code></pre>
+<div class="hl"><pre><span></span><code>nobelagentic<span class="w"> </span>run<span class="w"> </span><span class="s2">&quot;What is 15% of 240?&quot;</span>
+nobelagentic<span class="w"> </span>run<span class="w"> </span><span class="s2">&quot;Summarize this repo&quot;</span><span class="w"> </span>--tools<span class="w"> </span>files,shell<span class="w"> </span>--model<span class="w"> </span>gpt-5
+nobelagentic<span class="w"> </span>chat<span class="w"> </span>--tools<span class="w"> </span>web,files<span class="w"> </span>--mcp<span class="w"> </span>github
+nobelagentic<span class="w"> </span>tools<span class="w"> </span>list
+nobelagentic<span class="w"> </span>mcp<span class="w"> </span>list
+nobelagentic<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>&lt;name&gt;<span class="w"> </span><span class="s2">&quot;&lt;command or url&gt;&quot;</span>
+</code></pre></div>
+
 <p><code>run</code> executes one prompt and exits. <code>chat</code> keeps a conversation going for the session.</p>
 <p>The default tool set is <code>web,time,math,data</code> — the packs that can't touch your disk or shell. Add <code>files</code> or <code>shell</code> explicitly.</p>
 <p>In TypeScript, <code>npx nobelagentic ...</code> works without a global install.</p><div class="pager"><a href="/docs/handoffs">← Handoffs</a><a href="/docs/examples">Examples →</a></div></article>

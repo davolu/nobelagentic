@@ -21,34 +21,36 @@
 <p>A tool is a function the model can call. You never write a JSON schema.</p>
 <h2>Your own tools</h2>
 <p>Python builds the schema from type hints and the docstring. An <code>Args:</code> block becomes per-parameter descriptions.</p>
-<pre><code class="lang-python">from nobelagentic import tool
+<div class="hl"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">nobelagentic</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
 
-@tool
-def search_orders(customer_id: str, status: str = &quot;open&quot;, limit: int = 10) -&gt; list[dict]:
-    &quot;&quot;&quot;Find a customer's orders.
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">search_orders</span><span class="p">(</span><span class="n">customer_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;open&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find a customer&#39;s orders.</span>
 
-    Args:
-        customer_id: The customer's ID.
-        status: open, shipped or cancelled.
-        limit: Max rows to return.
-    &quot;&quot;&quot;
-    ...
-</code></pre>
+<span class="sd">    Args:</span>
+<span class="sd">        customer_id: The customer&#39;s ID.</span>
+<span class="sd">        status: open, shipped or cancelled.</span>
+<span class="sd">        limit: Max rows to return.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span>
+</code></pre></div>
+
 <p>Async functions work the same way. Return anything JSON-serialisable; it's stringified for the model.</p>
 <p>TypeScript uses a <code>zod</code> schema, which is the documentation the model sees:</p>
-<pre><code class="lang-ts">import { tool, z } from &quot;nobelagentic&quot;;
+<div class="hl"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">tool</span><span class="p">,</span><span class="w"> </span><span class="nx">z</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;nobelagentic&quot;</span><span class="p">;</span>
 
-const searchOrders = tool({
-  name: &quot;search_orders&quot;,
-  description: &quot;Find a customer's orders&quot;,
-  parameters: z.object({
-    customer_id: z.string(),
-    status: z.enum([&quot;open&quot;, &quot;shipped&quot;, &quot;cancelled&quot;]).default(&quot;open&quot;),
-    limit: z.number().int().default(10),
-  }),
-  execute: async ({ customer_id, status, limit }) =&gt; { /* ... */ },
-});
-</code></pre>
+<span class="kd">const</span><span class="w"> </span><span class="nx">searchOrders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">tool</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;search_orders&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Find a customer&#39;s orders&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">parameters</span><span class="o">:</span><span class="w"> </span><span class="kt">z.object</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">customer_id</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">(),</span>
+<span class="w">    </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">z.enum</span><span class="p">([</span><span class="s2">&quot;open&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;shipped&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cancelled&quot;</span><span class="p">]).</span><span class="k">default</span><span class="p">(</span><span class="s2">&quot;open&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">limit</span><span class="o">:</span><span class="w"> </span><span class="kt">z.number</span><span class="p">().</span><span class="kr">int</span><span class="p">().</span><span class="k">default</span><span class="p">(</span><span class="mf">10</span><span class="p">),</span>
+<span class="w">  </span><span class="p">}),</span>
+<span class="w">  </span><span class="nx">execute</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">customer_id</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">limit</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div>
+
 <h2>Errors</h2>
 <p>A tool that throws does not crash the run. The error text goes back to the model as the tool result, so it can retry, pick another tool, or explain. The same happens for an unknown tool name or bad arguments.</p>
 <h2>Built-in packs</h2>
@@ -97,9 +99,9 @@ const searchOrders = tool({
 <p><code>nobelagentic tools list</code> prints every tool with its description.</p>
 <h2>Credentials</h2>
 <p>A tool can declare the env vars it needs. Loading it without them fails immediately with a message naming the variable, rather than failing mid-run.</p>
-<pre><code class="lang-python">@tool(requires=[&quot;STRIPE_KEY&quot;])
-def refund(charge_id: str) -&gt; str: ...
-</code></pre><div class="pager"><a href="/docs/">← Getting started</a><a href="/docs/models">Models →</a></div></article>
+<div class="hl"><pre><span></span><code><span class="nd">@tool</span><span class="p">(</span><span class="n">requires</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;STRIPE_KEY&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">refund</span><span class="p">(</span><span class="n">charge_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
+</code></pre></div><div class="pager"><a href="/docs/">← Getting started</a><a href="/docs/models">Models →</a></div></article>
 </div>
 </div>
 </body>

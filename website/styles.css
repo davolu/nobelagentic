@@ -59,3 +59,14 @@ footer a{color:var(--muted)}
 @media (max-width:860px){.hero,.two,.levels,.docs{grid-template-columns:1fr}.swarm{height:auto}.swarm canvas{display:none}.swarm pre{position:static;opacity:1;transform:none;font-size:13px}.packs{grid-template-columns:1fr 1fr}.docs aside{position:static}nav.main a{margin-left:16px}.swarm{height:240px}}
 @media (max-width:520px){.packs{grid-template-columns:1fr}nav.main a:nth-child(2),nav.main a:nth-child(3){display:none}}
 @media (prefers-reduced-motion:reduce){.swarm pre{transition:none}}
+
+/* Pygments (build-time) highlighting — same palette as the landing page */
+.hl{margin:0}
+.hl pre{margin:0}
+.hl .k,.hl .kn,.hl .kd,.hl .kc,.hl .kr,.hl .kt,.hl .ow,.hl .nd,.hl .nt{color:#F2C14E}
+.hl .s,.hl .s1,.hl .s2,.hl .sd,.hl .sb,.hl .sa,.hl .si,.hl .se,.hl .sx,.hl .sr{color:#8FD3A7}
+.hl .c,.hl .c1,.hl .cm,.hl .ch,.hl .cs,.hl .cp{color:#8A93A3}
+.hl .nf,.hl .fm,.hl .nc,.hl .ne{color:#7FD1E0}
+.hl .mi,.hl .mf,.hl .mh,.hl .mb,.hl .mo{color:#E3B341}
+.hl .nb,.hl .bp{color:#D9B8F0}
+.hl .err{color:inherit;border:0}

@@ -22,137 +22,143 @@
 Every example below uses only the public API — <code>Agent</code>, <code>@tool</code>, <code>handoffs</code>, <code>mcp</code> — glued to the outside world with ordinary webhook code.</p>
 <h2>A WhatsApp agent</h2>
 <p>NobelAgentic doesn't care where messages come from. Point any webhook at an <code>Agent</code> and reply with the result. Here's a WhatsApp support agent using the <a href="https://developers.facebook.com/docs/whatsapp/cloud-api">WhatsApp Cloud API</a> and FastAPI:</p>
-<pre><code class="lang-python">import os, httpx
-from fastapi import FastAPI, Request
-from nobelagentic import Agent, tool
+<div class="hl"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">Request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nobelagentic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">tool</span>
 
-@tool
-def order_status(order_id: str) -&gt; dict:
-    &quot;&quot;&quot;Look up an order's status and ETA by its ID.&quot;&quot;&quot;
-    r = httpx.get(f&quot;https://api.yourshop.com/orders/{order_id}&quot;,
-                  headers={&quot;Authorization&quot;: f&quot;Bearer {os.environ['SHOP_API_KEY']}&quot;})
-    return r.json()
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">order_status</span><span class="p">(</span><span class="n">order_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look up an order&#39;s status and ETA by its ID.&quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://api.yourshop.com/orders/</span><span class="si">{</span><span class="n">order_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                  <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;SHOP_API_KEY&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
-agent = Agent(
-    &quot;You are the support agent for YourShop. Be warm and brief — &quot;
-    &quot;answers go to WhatsApp, so no markdown, short paragraphs.&quot;,
-    tools=[order_status, &quot;time&quot;],
-)
+<span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="s2">&quot;You are the support agent for YourShop. Be warm and brief — &quot;</span>
+    <span class="s2">&quot;answers go to WhatsApp, so no markdown, short paragraphs.&quot;</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">order_status</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">],</span>
+<span class="p">)</span>
 
-app = FastAPI()
-WA_TOKEN = os.environ[&quot;WHATSAPP_TOKEN&quot;]
-PHONE_ID = os.environ[&quot;WHATSAPP_PHONE_ID&quot;]
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<span class="n">WA_TOKEN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;WHATSAPP_TOKEN&quot;</span><span class="p">]</span>
+<span class="n">PHONE_ID</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;WHATSAPP_PHONE_ID&quot;</span><span class="p">]</span>
 
-@app.post(&quot;/webhook&quot;)
-async def webhook(req: Request):
-    data = await req.json()
-    msg = data[&quot;entry&quot;][0][&quot;changes&quot;][0][&quot;value&quot;][&quot;messages&quot;][0]
-    reply = agent.run(msg[&quot;text&quot;][&quot;body&quot;])
-    httpx.post(
-        f&quot;https://graph.facebook.com/v21.0/{PHONE_ID}/messages&quot;,
-        headers={&quot;Authorization&quot;: f&quot;Bearer {WA_TOKEN}&quot;},
-        json={&quot;messaging_product&quot;: &quot;whatsapp&quot;, &quot;to&quot;: msg[&quot;from&quot;],
-              &quot;text&quot;: {&quot;body&quot;: str(reply)}},
-    )
-    return {&quot;status&quot;: &quot;ok&quot;}
-</code></pre>
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/webhook&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">webhook</span><span class="p">(</span><span class="n">req</span><span class="p">:</span> <span class="n">Request</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">req</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;entry&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;changes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">reply</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">msg</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">][</span><span class="s2">&quot;body&quot;</span><span class="p">])</span>
+    <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;https://graph.facebook.com/v21.0/</span><span class="si">{</span><span class="n">PHONE_ID</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="n">WA_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;messaging_product&quot;</span><span class="p">:</span> <span class="s2">&quot;whatsapp&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;from&quot;</span><span class="p">],</span>
+              <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">reply</span><span class="p">)}},</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;ok&quot;</span><span class="p">}</span>
+</code></pre></div>
+
 <p>That's the whole bot. The same shape works for Telegram, Slack, Discord, SMS via Twilio — swap the webhook parsing and the send call.</p>
 <h2>Any third-party API as a tool</h2>
 <p>A tool is just a function. Type hints and the docstring become the schema the model sees, so wrapping any SDK or REST API is one decorator:</p>
-<pre><code class="lang-python">import httpx
-from nobelagentic import Agent, tool
+<div class="hl"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nobelagentic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">tool</span>
 
-@tool
-def search_crm(query: str) -&gt; list:
-    &quot;&quot;&quot;Search customers in the CRM by name or email.&quot;&quot;&quot;
-    return httpx.get(&quot;https://api.crm.example.com/search&quot;,
-                     params={&quot;q&quot;: query}).json()
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">search_crm</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Search customers in the CRM by name or email.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://api.crm.example.com/search&quot;</span><span class="p">,</span>
+                     <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;q&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">})</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
-@tool
-async def create_ticket(title: str, body: str, priority: str = &quot;normal&quot;) -&gt; dict:
-    &quot;&quot;&quot;Open a support ticket. Priority: low, normal, or urgent.&quot;&quot;&quot;
-    async with httpx.AsyncClient() as c:
-        r = await c.post(&quot;https://api.ticketing.example.com/tickets&quot;,
-                         json={&quot;title&quot;: title, &quot;body&quot;: body, &quot;priority&quot;: priority})
-        return r.json()
+<span class="nd">@tool</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_ticket</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">priority</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open a support ticket. Priority: low, normal, or urgent.&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">c</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://api.ticketing.example.com/tickets&quot;</span><span class="p">,</span>
+                         <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">body</span><span class="p">,</span> <span class="s2">&quot;priority&quot;</span><span class="p">:</span> <span class="n">priority</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
-agent = Agent(&quot;You handle inbound support requests end to end.&quot;,
-              tools=[search_crm, create_ticket])
+<span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;You handle inbound support requests end to end.&quot;</span><span class="p">,</span>
+              <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">search_crm</span><span class="p">,</span> <span class="n">create_ticket</span><span class="p">])</span>
 
-agent.run(&quot;jane@acme.co says checkout is broken — file an urgent ticket&quot;)
-</code></pre>
+<span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;jane@acme.co says checkout is broken — file an urgent ticket&quot;</span><span class="p">)</span>
+</code></pre></div>
+
 <p>Sync and async functions both work. Raise an exception and the model sees the error message and can recover.</p>
 <h2>A support team with handoffs</h2>
 <p>Split responsibilities across agents and let a triage agent route:</p>
-<pre><code class="lang-python">from nobelagentic import Agent
+<div class="hl"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">nobelagentic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
 
-billing = Agent(&quot;You resolve billing questions. You can issue refunds up to $50.&quot;,
-                name=&quot;billing&quot;, tools=[search_crm, &quot;math&quot;])
-tech    = Agent(&quot;You debug technical issues. Ask for error messages early.&quot;,
-                name=&quot;tech&quot;, tools=[create_ticket, &quot;web&quot;])
+<span class="n">billing</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;You resolve billing questions. You can issue refunds up to $50.&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;billing&quot;</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">search_crm</span><span class="p">,</span> <span class="s2">&quot;math&quot;</span><span class="p">])</span>
+<span class="n">tech</span>    <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;You debug technical issues. Ask for error messages early.&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;tech&quot;</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">create_ticket</span><span class="p">,</span> <span class="s2">&quot;web&quot;</span><span class="p">])</span>
 
-triage = Agent(
-    &quot;Classify the user's problem and hand off to billing or tech immediately. &quot;
-    &quot;Never answer yourself.&quot;,
-    name=&quot;triage&quot;,
-    handoffs=[billing, tech],
-)
+<span class="n">triage</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="s2">&quot;Classify the user&#39;s problem and hand off to billing or tech immediately. &quot;</span>
+    <span class="s2">&quot;Never answer yourself.&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;triage&quot;</span><span class="p">,</span>
+    <span class="n">handoffs</span><span class="o">=</span><span class="p">[</span><span class="n">billing</span><span class="p">,</span> <span class="n">tech</span><span class="p">],</span>
+<span class="p">)</span>
 
-result = triage.run(&quot;I was charged twice for my subscription this month&quot;)
-print(result.agent, &quot;→&quot;, result.output)   # billing → ...
-</code></pre>
+<span class="n">result</span> <span class="o">=</span> <span class="n">triage</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;I was charged twice for my subscription this month&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="s2">&quot;→&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>   <span class="c1"># billing → ...</span>
+</code></pre></div>
+
 <h2>Third-party services via MCP</h2>
 <p>Anything with an MCP server — GitHub, Postgres, Stripe, your own internal tools — plugs in without writing a wrapper:</p>
-<pre><code class="lang-python">Agent(&quot;You triage bug reports into GitHub issues.&quot;,
-      mcp=[&quot;github&quot;])                                  # registry name
+<div class="hl"><pre><span></span><code><span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;You triage bug reports into GitHub issues.&quot;</span><span class="p">,</span>
+      <span class="n">mcp</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;github&quot;</span><span class="p">])</span>                                  <span class="c1"># registry name</span>
 
-Agent(&quot;You answer questions about our production data. Read-only.&quot;,
-      mcp=[&quot;postgres&quot;])
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;You answer questions about our production data. Read-only.&quot;</span><span class="p">,</span>
+      <span class="n">mcp</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;postgres&quot;</span><span class="p">])</span>
 
-Agent(&quot;...&quot;, mcp=[&quot;https://mcp.yourcompany.com/mcp&quot;])  # any remote server
-</code></pre>
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">mcp</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;https://mcp.yourcompany.com/mcp&quot;</span><span class="p">])</span>  <span class="c1"># any remote server</span>
+</code></pre></div>
+
 <p>Register a server once with <code>nobelagentic mcp add myserver "npx -y some-mcp-server"</code> and every project can use it by name.</p>
 <h2>TypeScript: a Telegram bot</h2>
 <p>The TypeScript package has the same API. A long-polling Telegram bot, no framework needed:</p>
-<pre><code class="lang-ts">import { Agent, tool, z } from &quot;nobelagentic&quot;;
+<div class="hl"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Agent</span><span class="p">,</span><span class="w"> </span><span class="nx">tool</span><span class="p">,</span><span class="w"> </span><span class="nx">z</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;nobelagentic&quot;</span><span class="p">;</span>
 
-const fx = tool({
-  name: &quot;fx_rate&quot;,
-  description: &quot;Current exchange rate between two currencies&quot;,
-  parameters: z.object({ from: z.string(), to: z.string() }),
-  execute: async ({ from, to }) =&gt;
-    (await fetch(`https://api.frankfurter.app/latest?from=${from}&amp;to=${to}`)).json(),
-});
+<span class="kd">const</span><span class="w"> </span><span class="nx">fx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">tool</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;fx_rate&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Current exchange rate between two currencies&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">parameters</span><span class="o">:</span><span class="w"> </span><span class="kt">z.object</span><span class="p">({</span><span class="w"> </span><span class="nx">from</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">(),</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">()</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">  </span><span class="nx">execute</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="kr">from</span><span class="p">,</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">    </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`https://api.frankfurter.app/latest?from=</span><span class="si">${</span><span class="kr">from</span><span class="si">}</span><span class="sb">&amp;to=</span><span class="si">${</span><span class="nx">to</span><span class="si">}</span><span class="sb">`</span><span class="p">)).</span><span class="nx">json</span><span class="p">(),</span>
+<span class="p">});</span>
 
-const agent = new Agent(&quot;You are a concise personal finance assistant.&quot;, {
-  tools: [fx, &quot;math&quot;, &quot;time&quot;],
-});
+<span class="kd">const</span><span class="w"> </span><span class="nx">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Agent</span><span class="p">(</span><span class="s2">&quot;You are a concise personal finance assistant.&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">tools</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">fx</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;math&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;time&quot;</span><span class="p">],</span>
+<span class="p">});</span>
 
-const API = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}`;
-let offset = 0;
-while (true) {
-  const { result } = await (await fetch(`${API}/getUpdates?timeout=30&amp;offset=${offset}`)).json();
-  for (const u of result) {
-    offset = u.update_id + 1;
-    if (!u.message?.text) continue;
-    const reply = await agent.run(u.message.text);
-    await fetch(`${API}/sendMessage`, {
-      method: &quot;POST&quot;, headers: { &quot;content-type&quot;: &quot;application/json&quot; },
-      body: JSON.stringify({ chat_id: u.message.chat.id, text: String(reply) }),
-    });
-  }
-}
-</code></pre>
+<span class="kd">const</span><span class="w"> </span><span class="nx">API</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`https://api.telegram.org/bot</span><span class="si">${</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">TELEGRAM_TOKEN</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/getUpdates?timeout=30&amp;offset=</span><span class="si">${</span><span class="nx">offset</span><span class="si">}</span><span class="sb">`</span><span class="p">)).</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">u</span><span class="p">.</span><span class="nx">update_id</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">u</span><span class="p">.</span><span class="nx">message</span><span class="o">?</span><span class="p">.</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">reply</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">agent</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">message</span><span class="p">.</span><span class="nx">text</span><span class="p">);</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/sendMessage`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;content-type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;application/json&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="kt">JSON.stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">chat_id</span><span class="o">:</span><span class="w"> </span><span class="kt">u.message.chat.id</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="kt">String</span><span class="p">(</span><span class="nx">reply</span><span class="p">)</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
 <h2>Keeping context between messages</h2>
 <p>Chat platforms deliver one message at a time. Until first-class memory lands (see the <a href="/docs/roadmap">roadmap</a>), the simple pattern is to prepend recent history yourself:</p>
-<pre><code class="lang-python">history: dict[str, list[str]] = {}
+<div class="hl"><pre><span></span><code><span class="n">history</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
-def handle(user_id: str, text: str) -&gt; str:
-    past = &quot;\n&quot;.join(history.setdefault(user_id, [])[-6:])
-    reply = str(agent.run(f&quot;Recent conversation:\n{past}\n\nUser: {text}&quot;))
-    history[user_id] += [f&quot;User: {text}&quot;, f&quot;You: {reply}&quot;]
-    return reply
-</code></pre>
+<span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">past</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="p">[])[</span><span class="o">-</span><span class="mi">6</span><span class="p">:])</span>
+    <span class="n">reply</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recent conversation:</span><span class="se">\n</span><span class="si">{</span><span class="n">past</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">User: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+    <span class="n">history</span><span class="p">[</span><span class="n">user_id</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;User: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;You: </span><span class="si">{</span><span class="n">reply</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">reply</span>
+</code></pre></div>
+
 <p>Swap the dict for Redis in production and you have a stateful bot on a stateless framework.</p><div class="pager"><a href="/docs/cli">← CLI</a><a href="/docs/roadmap">Roadmap →</a></div></article>
 </div>
 </div>

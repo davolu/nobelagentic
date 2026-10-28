@@ -19,27 +19,29 @@
   <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs" aria-current=page>Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap">Roadmap</a></aside>
   <article><h1>Handoffs</h1>
 <p>A handoff passes the conversation to another agent. It's the seed of the Crew API and is how you build triage, specialists and escalation paths today.</p>
-<pre><code class="lang-python">from nobelagentic import Agent
+<div class="hl"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">nobelagentic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
 
-billing = Agent(&quot;Handle billing questions. Be precise.&quot;, name=&quot;billing&quot;, tools=[&quot;data&quot;])
-support = Agent(&quot;Handle technical support.&quot;, name=&quot;support&quot;, tools=[&quot;web&quot;])
+<span class="n">billing</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;Handle billing questions. Be precise.&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;billing&quot;</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+<span class="n">support</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;Handle technical support.&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;support&quot;</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;web&quot;</span><span class="p">])</span>
 
-triage = Agent(
-    &quot;Route each request to billing or support. Hand off immediately; don't answer yourself.&quot;,
-    handoffs=[billing, support],
-)
+<span class="n">triage</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="s2">&quot;Route each request to billing or support. Hand off immediately; don&#39;t answer yourself.&quot;</span><span class="p">,</span>
+    <span class="n">handoffs</span><span class="o">=</span><span class="p">[</span><span class="n">billing</span><span class="p">,</span> <span class="n">support</span><span class="p">],</span>
+<span class="p">)</span>
 
-result = triage.run(&quot;I was charged twice this month&quot;)
-print(result.agent)    # &quot;billing&quot;
-print(result.output)
-</code></pre>
+<span class="n">result</span> <span class="o">=</span> <span class="n">triage</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;I was charged twice this month&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>    <span class="c1"># &quot;billing&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+</code></pre></div>
+
 <p>Each handoff target shows up to the model as a tool named <code>handoff_to_&lt;name&gt;</code>. When it's called, the target's instructions replace the system prompt, the full conversation carries over, and the loop continues as that agent — with its own tools and model.</p>
 <h2>Events</h2>
 <p>Listen for <code>Handoff</code> events to show the user who's answering:</p>
-<pre><code class="lang-python">async for ev in triage.stream(&quot;...&quot;):
-    if isinstance(ev, Handoff):
-        print(f&quot;→ now talking to {ev.to_agent}&quot;)
-</code></pre>
+<div class="hl"><pre><span></span><code><span class="k">async</span> <span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span> <span class="n">triage</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span> <span class="n">Handoff</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;→ now talking to </span><span class="si">{</span><span class="n">ev</span><span class="o">.</span><span class="n">to_agent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
 <h2>Limits</h2>
 <p>Handoffs are one-way. For round-trips, review loops and parallel workers, use the Graph API (v0.2) or the Crew API (v0.3).</p><div class="pager"><a href="/docs/mcp">← MCP</a><a href="/docs/cli">CLI →</a></div></article>
 </div>

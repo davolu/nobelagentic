@@ -20,13 +20,14 @@
   <article><h1>Models</h1>
 <p>Every provider sits behind one interface. Your agent code never sees a vendor SDK object.</p>
 <h2>Picking a model</h2>
-<pre><code class="lang-python">Agent(&quot;...&quot;)                              # auto: first provider with a key in env
-Agent(&quot;...&quot;, model=&quot;claude-opus-5-5&quot;)     # prefix → Anthropic
-Agent(&quot;...&quot;, model=&quot;gpt-5&quot;)               # prefix → OpenAI
-Agent(&quot;...&quot;, model=&quot;openai:gpt-5&quot;)        # explicit
-Agent(&quot;...&quot;, model=&quot;ollama:llama3.1&quot;)     # local
-Agent(&quot;...&quot;, model=&quot;groq:llama-3.3-70b&quot;)  # any OpenAI-compatible host
-</code></pre>
+<div class="hl"><pre><span></span><code><span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>                              <span class="c1"># auto: first provider with a key in env</span>
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;claude-opus-5-5&quot;</span><span class="p">)</span>     <span class="c1"># prefix → Anthropic</span>
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-5&quot;</span><span class="p">)</span>               <span class="c1"># prefix → OpenAI</span>
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;openai:gpt-5&quot;</span><span class="p">)</span>        <span class="c1"># explicit</span>
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;ollama:llama3.1&quot;</span><span class="p">)</span>     <span class="c1"># local</span>
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;groq:llama-3.3-70b&quot;</span><span class="p">)</span>  <span class="c1"># any OpenAI-compatible host</span>
+</code></pre></div>
+
 <p>Auto-detection order: <code>ANTHROPIC_API_KEY</code>, <code>OPENAI_API_KEY</code>, <code>GEMINI_API_KEY</code>.</p>
 <h2>Supported providers</h2>
 <table>
@@ -77,16 +78,17 @@ Agent(&quot;...&quot;, model=&quot;groq:llama-3.3-70b&quot;)  # any OpenAI-compa
 </table>
 <h2>Bring your own</h2>
 <p>Subclass <code>Provider</code> and implement <code>complete()</code>. Streaming is optional; the default fakes deltas from a full response.</p>
-<pre><code class="lang-python">from nobelagentic import Provider, Message, Usage
-from nobelagentic.types import ModelResponse
+<div class="hl"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">nobelagentic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Provider</span><span class="p">,</span> <span class="n">Message</span><span class="p">,</span> <span class="n">Usage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nobelagentic.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelResponse</span>
 
-class MyProvider(Provider):
-    async def complete(self, messages, tools, max_tokens=4096) -&gt; ModelResponse:
-        ...
-        return ModelResponse(Message.assistant(text, calls), Usage(i, o))
+<span class="k">class</span><span class="w"> </span><span class="nc">MyProvider</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">,</span> <span class="n">tools</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">4096</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelResponse</span><span class="p">:</span>
+        <span class="o">...</span>
+        <span class="k">return</span> <span class="n">ModelResponse</span><span class="p">(</span><span class="n">Message</span><span class="o">.</span><span class="n">assistant</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">calls</span><span class="p">),</span> <span class="n">Usage</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">))</span>
 
-Agent(&quot;...&quot;, model=MyProvider(&quot;my-model&quot;))
-</code></pre>
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">MyProvider</span><span class="p">(</span><span class="s2">&quot;my-model&quot;</span><span class="p">))</span>
+</code></pre></div>
+
 <p>This is also how the test suite runs offline: a <code>FakeProvider</code> replays a script of responses.</p><div class="pager"><a href="/docs/tools">← Tools</a><a href="/docs/mcp">MCP →</a></div></article>
 </div>
 </div>

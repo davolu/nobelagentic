@@ -19,10 +19,11 @@
   <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp" aria-current=page>MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap">Roadmap</a></aside>
   <article><h1>MCP</h1>
 <p>Any Model Context Protocol server becomes a set of tools, indistinguishable from native ones.</p>
-<pre><code class="lang-python">Agent(&quot;...&quot;, mcp=[&quot;github&quot;, &quot;postgres&quot;])
-Agent(&quot;...&quot;, mcp=[&quot;https://tools.example.com/mcp&quot;])
-Agent(&quot;...&quot;, mcp=[{&quot;command&quot;: &quot;npx&quot;, &quot;args&quot;: [&quot;-y&quot;, &quot;some-mcp-server&quot;]}])
-</code></pre>
+<div class="hl"><pre><span></span><code><span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">mcp</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;github&quot;</span><span class="p">,</span> <span class="s2">&quot;postgres&quot;</span><span class="p">])</span>
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">mcp</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;https://tools.example.com/mcp&quot;</span><span class="p">])</span>
+<span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">mcp</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;npx&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-y&quot;</span><span class="p">,</span> <span class="s2">&quot;some-mcp-server&quot;</span><span class="p">]}])</span>
+</code></pre></div>
+
 <h2>Registry</h2>
 <p>These names work out of the box:</p>
 <table>
@@ -73,9 +74,10 @@ Agent(&quot;...&quot;, mcp=[{&quot;command&quot;: &quot;npx&quot;, &quot;args&qu
 </table>
 <p>A missing credential fails at agent construction with the variable's name, not halfway through a run.</p>
 <h2>Your own servers</h2>
-<pre><code class="lang-bash">nobelagentic mcp add weather &quot;npx -y weather-mcp --units metric&quot;
-nobelagentic mcp add internal https://mcp.internal.example.com/mcp
-</code></pre>
+<div class="hl"><pre><span></span><code>nobelagentic<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>weather<span class="w"> </span><span class="s2">&quot;npx -y weather-mcp --units metric&quot;</span>
+nobelagentic<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>internal<span class="w"> </span>https://mcp.internal.example.com/mcp
+</code></pre></div>
+
 <p>These are saved to <code>~/.nobelagentic/mcp.json</code> and available in every project by name.</p>
 <h2>Roadmap</h2>
 <p>MCP <em>server</em> mode — exposing an agent or tool pack as an MCP server with <code>nobelagentic serve --mcp</code> — is planned for v0.4, so anything you build here plugs into Claude Code, Cursor and other MCP hosts.</p><div class="pager"><a href="/docs/models">← Models</a><a href="/docs/handoffs">Handoffs →</a></div></article>
