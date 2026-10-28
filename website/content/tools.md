@@ -12,7 +12,7 @@ A tool is a function the model can call. You never write a JSON schema.
 Python builds the schema from type hints and the docstring. An `Args:` block becomes per-parameter descriptions.
 
 ```python
-from swarmagents import tool
+from nobelagentic import tool
 
 @tool
 def search_orders(customer_id: str, status: str = "open", limit: int = 10) -> list[dict]:
@@ -31,7 +31,7 @@ Async functions work the same way. Return anything JSON-serialisable; it's strin
 TypeScript uses a `zod` schema, which is the documentation the model sees:
 
 ```ts
-import { tool, z } from "swarmagents";
+import { tool, z } from "nobelagentic";
 
 const searchOrders = tool({
   name: "search_orders",
@@ -56,13 +56,13 @@ Load a pack by name: `tools=["web", "files"]`. Packs are lazy — nothing is imp
 | Pack | Tools | Notes |
 |---|---|---|
 | `web` | `web_search`, `fetch_url`, `http_request` | No API key needed |
-| `files` | `read_file`, `write_file`, `append_file`, `list_dir`, `search_files`, `delete_file` | Sandboxed to `SWARMAGENTS_FILES_ROOT` (default: cwd) |
+| `files` | `read_file`, `write_file`, `append_file`, `list_dir`, `search_files`, `delete_file` | Sandboxed to `NOBELAGENTIC_FILES_ROOT` (default: cwd) |
 | `shell` | `run_command`, `run_python` / `run_javascript` | Opt-in only. Never loaded by default. |
 | `time` | `now`, `date_add`, `convert_timezone` | IANA timezones |
 | `math` | `calculate`, `convert_units` | Safe expression evaluation |
 | `data` | `parse_json`, `json_query`, `csv_to_json`, `json_to_csv`, `summarize_table` | |
 
-`swarmagents tools list` prints every tool with its description.
+`nobelagentic tools list` prints every tool with its description.
 
 ## Credentials
 

@@ -22,8 +22,8 @@ jobs:
         id: check
         run: |
           V=$(grep -m1 '^version' python/pyproject.toml | sed 's/.*"\(.*\)"/\1/')
-          if curl -sf "https://pypi.org/pypi/swarmagents/$V/json" >/dev/null; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "swarmagents $V already on PyPI, skipping"
+          if curl -sf "https://pypi.org/pypi/nobelagentic/$V/json" >/dev/null; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "nobelagentic $V already on PyPI, skipping"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
@@ -47,8 +47,8 @@ jobs:
         id: check
         run: |
           V=$(node -p "require('./typescript/package.json').version")
-          if npm view "swarmagents@$V" version >/dev/null 2>&1; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "swarmagents@$V already on npm, skipping"
+          if npm view "nobelagentic@$V" version >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "nobelagentic@$V already on npm, skipping"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi

@@ -3,7 +3,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { tool } from "../tools.js";
 
-const ROOT = path.resolve(process.env.SWARMAGENTS_FILES_ROOT ?? ".");
+const ROOT = path.resolve(process.env.NOBELAGENTIC_FILES_ROOT ?? ".");
 const safe = (p: string) => {
   const abs = path.resolve(ROOT, p);
   if (abs !== ROOT && !abs.startsWith(ROOT + path.sep)) throw new Error(`Path escapes allowed root ${ROOT}`);

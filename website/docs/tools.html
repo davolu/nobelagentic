@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tools — Swarm Agents docs</title>
+<title>Tools — NobelAgentic docs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
@@ -12,16 +12,16 @@
 <body>
 <div class="wrap">
 <header class="top">
-  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>Swarm Agents</a>
-  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/davolu/swarm-agents">GitHub</a></nav>
+  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>NobelAgentic</a>
+  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/davolu/nobelagentic">GitHub</a></nav>
 </header>
 <div class="docs">
-  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools" aria-current=page>Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/roadmap">Roadmap</a></aside>
+  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools" aria-current=page>Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap">Roadmap</a></aside>
   <article><h1>Tools</h1>
 <p>A tool is a function the model can call. You never write a JSON schema.</p>
 <h2>Your own tools</h2>
 <p>Python builds the schema from type hints and the docstring. An <code>Args:</code> block becomes per-parameter descriptions.</p>
-<pre><code class="lang-python">from swarmagents import tool
+<pre><code class="lang-python">from nobelagentic import tool
 
 @tool
 def search_orders(customer_id: str, status: str = &quot;open&quot;, limit: int = 10) -&gt; list[dict]:
@@ -36,7 +36,7 @@ def search_orders(customer_id: str, status: str = &quot;open&quot;, limit: int =
 </code></pre>
 <p>Async functions work the same way. Return anything JSON-serialisable; it's stringified for the model.</p>
 <p>TypeScript uses a <code>zod</code> schema, which is the documentation the model sees:</p>
-<pre><code class="lang-ts">import { tool, z } from &quot;swarmagents&quot;;
+<pre><code class="lang-ts">import { tool, z } from &quot;nobelagentic&quot;;
 
 const searchOrders = tool({
   name: &quot;search_orders&quot;,
@@ -70,7 +70,7 @@ const searchOrders = tool({
 <tr>
 <td><code>files</code></td>
 <td><code>read_file</code>, <code>write_file</code>, <code>append_file</code>, <code>list_dir</code>, <code>search_files</code>, <code>delete_file</code></td>
-<td>Sandboxed to <code>SWARMAGENTS_FILES_ROOT</code> (default: cwd)</td>
+<td>Sandboxed to <code>NOBELAGENTIC_FILES_ROOT</code> (default: cwd)</td>
 </tr>
 <tr>
 <td><code>shell</code></td>
@@ -94,7 +94,7 @@ const searchOrders = tool({
 </tr>
 </tbody>
 </table>
-<p><code>swarmagents tools list</code> prints every tool with its description.</p>
+<p><code>nobelagentic tools list</code> prints every tool with its description.</p>
 <h2>Credentials</h2>
 <p>A tool can declare the env vars it needs. Loading it without them fails immediately with a message naming the variable, rather than failing mid-run.</p>
 <pre><code class="lang-python">@tool(requires=[&quot;STRIPE_KEY&quot;])

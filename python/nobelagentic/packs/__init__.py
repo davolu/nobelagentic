@@ -10,12 +10,12 @@ import importlib
 from ..tools import Tool
 
 PACKS: dict[str, str] = {
-    "web": "swarmagents.packs.web",
-    "files": "swarmagents.packs.files",
-    "shell": "swarmagents.packs.shell",
-    "time": "swarmagents.packs.time_",
-    "math": "swarmagents.packs.math_",
-    "data": "swarmagents.packs.data",
+    "web": "nobelagentic.packs.web",
+    "files": "nobelagentic.packs.files",
+    "shell": "nobelagentic.packs.shell",
+    "time": "nobelagentic.packs.time_",
+    "math": "nobelagentic.packs.math_",
+    "data": "nobelagentic.packs.data",
 }
 
 

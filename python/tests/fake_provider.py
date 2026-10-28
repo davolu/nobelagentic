@@ -1,8 +1,8 @@
 """A scripted fake provider so the loop can be tested without API keys."""
 from __future__ import annotations
 
-from swarmagents.providers.base import Provider
-from swarmagents.types import Message, ModelResponse, ToolCall, Usage
+from nobelagentic.providers.base import Provider
+from nobelagentic.types import Message, ModelResponse, ToolCall, Usage
 
 
 class FakeProvider(Provider):

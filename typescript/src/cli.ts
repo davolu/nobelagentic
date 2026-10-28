@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// swarmagents run "..." | chat | tools list | mcp list|add
+// nobelagentic run "..." | chat | tools list | mcp list|add
 import { createInterface } from "node:readline/promises";
 import { Agent } from "./agent.js";
 import type { Message } from "./types.js";
@@ -59,11 +59,11 @@ async function main() {
     await addServer(name, command.startsWith("http") ? { url: command } : { command: command.split(" ")[0], args: command.split(" ").slice(1) });
     console.log(`added ${name}`); return;
   }
-  console.log(`swarmagents — agents that get out of your way
+  console.log(`nobelagentic — agents that get out of your way
 
-  swarmagents run "<prompt>" [--tools web,files] [--model gpt-5] [--mcp github]
-  swarmagents chat
-  swarmagents tools list
-  swarmagents mcp list | mcp add <name> <command...>`);
+  nobelagentic run "<prompt>" [--tools web,files] [--model gpt-5] [--mcp github]
+  nobelagentic chat
+  nobelagentic tools list
+  nobelagentic mcp list | mcp add <name> <command...>`);
 }
 main().catch((e) => { console.error(e.message ?? e); process.exit(1); });

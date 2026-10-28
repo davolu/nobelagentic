@@ -1,9 +1,9 @@
-# Swarm Agents (TypeScript)
+# NobelAgentic (TypeScript)
 
 **Agents that get out of your way.** One kernel, three APIs, any model. Same API as the Python package.
 
 ```ts
-import { Agent, tool, z } from "swarmagents";
+import { Agent, tool, z } from "nobelagentic";
 
 const getWeather = tool({
   name: "get_weather",
@@ -19,7 +19,7 @@ console.log(await agent.run("What's the weather in Lagos right now?"));
 ## Install
 
 ```bash
-npm install swarmagents @anthropic-ai/sdk     # or openai
+npm install nobelagentic @anthropic-ai/sdk     # or openai
 ```
 
 Set `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY`, or use `model: "ollama:llama3.1"`.
@@ -60,9 +60,9 @@ await triage.run("Hola!");
 ## CLI
 
 ```
-npx swarmagents run "What is 15% of 240?"
-npx swarmagents chat --tools web,files --mcp github
-npx swarmagents tools list
+npx nobelagentic run "What is 15% of 240?"
+npx nobelagentic chat --tools web,files --mcp github
+npx nobelagentic tools list
 ```
 
 ## Develop

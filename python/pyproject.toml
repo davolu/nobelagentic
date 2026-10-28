@@ -1,5 +1,5 @@
 [project]
-name = "swarmagents"
+name = "nobelagentic"
 version = "0.1.0"
 description = "The agent framework that gets out of your way. One kernel, three APIs, any model."
 readme = "README.md"
@@ -21,18 +21,18 @@ all = ["anthropic>=0.40", "openai>=1.50", "mcp>=1.2", "duckduckgo-search>=6.0"]
 dev = ["pytest>=8", "pytest-asyncio>=0.24"]
 
 [project.urls]
-Homepage = "https://github.com/davolu/swarm-agents"
-Documentation = "https://swarmagents.vercel.app"
+Homepage = "https://github.com/davolu/nobelagentic"
+Documentation = "https://nobelagentic.vercel.app"
 
 [project.scripts]
-swarmagents = "swarmagents.cli:app"
+nobelagentic = "nobelagentic.cli:app"
 
 [build-system]
 requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["swarmagents*"]
+include = ["nobelagentic*"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

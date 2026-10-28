@@ -1,7 +1,7 @@
 import pytest
 
-from swarmagents import Agent, Handoff, RunEnd, TextDelta, ToolCallEnd, ToolCallStart, tool
-from swarmagents.tools import Tool
+from nobelagentic import Agent, Handoff, RunEnd, TextDelta, ToolCallEnd, ToolCallStart, tool
+from nobelagentic.tools import Tool
 
 from .fake_provider import FakeProvider
 

@@ -37,8 +37,8 @@ Auto-detection order: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`.
 Subclass `Provider` and implement `complete()`. Streaming is optional; the default fakes deltas from a full response.
 
 ```python
-from swarmagents import Provider, Message, Usage
-from swarmagents.types import ModelResponse
+from nobelagentic import Provider, Message, Usage
+from nobelagentic.types import ModelResponse
 
 class MyProvider(Provider):
     async def complete(self, messages, tools, max_tokens=4096) -> ModelResponse:

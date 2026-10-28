@@ -1,5 +1,5 @@
 """Handoffs between agents — the seed of the Crew API."""
-from swarmagents import Agent
+from nobelagentic import Agent
 
 spanish = Agent("You only speak Spanish. Answer briefly.", name="spanish")
 french = Agent("You only speak French. Answer briefly.", name="french")

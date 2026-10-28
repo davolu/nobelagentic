@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Models — Swarm Agents docs</title>
+<title>Models — NobelAgentic docs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
@@ -12,11 +12,11 @@
 <body>
 <div class="wrap">
 <header class="top">
-  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>Swarm Agents</a>
-  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/davolu/swarm-agents">GitHub</a></nav>
+  <a class="logo" href="/"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="4" fill="#D89B00"/><circle cx="4" cy="7" r="2.4" fill="#161A22"/><circle cx="22" cy="6" r="2.4" fill="#161A22"/><circle cx="6" cy="21" r="2.4" fill="#161A22"/><circle cx="21" cy="20" r="2.4" fill="#161A22"/></svg>NobelAgentic</a>
+  <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/davolu/nobelagentic">GitHub</a></nav>
 </header>
 <div class="docs">
-  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models" aria-current=page>Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/roadmap">Roadmap</a></aside>
+  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models" aria-current=page>Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap">Roadmap</a></aside>
   <article><h1>Models</h1>
 <p>Every provider sits behind one interface. Your agent code never sees a vendor SDK object.</p>
 <h2>Picking a model</h2>
@@ -77,8 +77,8 @@ Agent(&quot;...&quot;, model=&quot;groq:llama-3.3-70b&quot;)  # any OpenAI-compa
 </table>
 <h2>Bring your own</h2>
 <p>Subclass <code>Provider</code> and implement <code>complete()</code>. Streaming is optional; the default fakes deltas from a full response.</p>
-<pre><code class="lang-python">from swarmagents import Provider, Message, Usage
-from swarmagents.types import ModelResponse
+<pre><code class="lang-python">from nobelagentic import Provider, Message, Usage
+from nobelagentic.types import ModelResponse
 
 class MyProvider(Provider):
     async def complete(self, messages, tools, max_tokens=4096) -&gt; ModelResponse:

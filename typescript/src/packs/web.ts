@@ -6,7 +6,7 @@ export const webSearch = tool({
   description: "Search the web (DuckDuckGo HTML). Returns title, url, snippet per result.",
   parameters: z.object({ query: z.string(), max_results: z.number().int().min(1).max(20).default(5) }),
   execute: async ({ query, max_results }) => {
-    const r = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, { headers: { "User-Agent": "swarmagents/0.1" } });
+    const r = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, { headers: { "User-Agent": "nobelagentic/0.1" } });
     const html = await r.text();
     const out: { title: string; url: string; snippet: string }[] = [];
     const re = /<a[^>]+class="result__a"[^>]+href="([^"]+)"[^>]*>(.*?)<\/a>[\s\S]*?<a[^>]+class="result__snippet"[^>]*>(.*?)<\/a>/g;
@@ -24,7 +24,7 @@ export const fetchUrl = tool({
   description: "Fetch a web page and return its visible text (HTML stripped).",
   parameters: z.object({ url: z.string().url(), max_chars: z.number().int().default(8000) }),
   execute: async ({ url, max_chars }) => {
-    const r = await fetch(url, { headers: { "User-Agent": "swarmagents/0.1" } });
+    const r = await fetch(url, { headers: { "User-Agent": "nobelagentic/0.1" } });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     let text = await r.text();
     if ((r.headers.get("content-type") ?? "").includes("html"))
