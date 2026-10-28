@@ -109,3 +109,16 @@ def test_max_steps_stops_runaway():
     provider = FakeProvider([[("add", {"a": 1, "b": 1})]] * 5 + ["never"])
     result = Agent("x", model=provider, tools=[add], max_steps=3).run("loop")
     assert result.steps == 3
+
+
+def test_agent_as_tool_keeps_orchestrator_in_control():
+    worker = Agent("I research things", name="researcher", model=FakeProvider(["research done: 42"]))
+    boss = Agent(
+        "You orchestrate specialists",
+        model=FakeProvider([[("ask_researcher", {"task": "find the answer"})], "the answer is 42"]),
+        tools=[worker.as_tool()],
+    )
+    result = boss.run("go")
+    assert result.output == "the answer is 42"
+    assert any(m.role == "tool" and "research done: 42" in m.content for m in result.messages)
+    assert result.agent == "agent"  # control never left the orchestrator

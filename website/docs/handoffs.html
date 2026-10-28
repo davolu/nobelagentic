@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Handoffs — NobelAgentic docs</title>
+<title>Handoffs & orchestration — NobelAgentic docs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600;12..96,75..100,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
@@ -16,8 +16,10 @@
   <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/davolu/nobelagentic">GitHub</a></nav>
 </header>
 <div class="docs">
-  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs" aria-current=page>Handoffs</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap">Roadmap</a></aside>
-  <article><h1>Handoffs</h1>
+  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs" aria-current=page>Multi-agent</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap">Roadmap</a></aside>
+  <article><h1>Handoffs &amp; orchestration</h1>
+<p>Two ways to put agents together, for two different shapes of problem. A <strong>handoff</strong> transfers the conversation — right when one specialist should take over and answer the user directly. An <strong>orchestrator</strong> keeps control — right when one agent should delegate subtasks, collect the results, and combine them.</p>
+<h2>Handoffs</h2>
 <p>A handoff passes the conversation to another agent. It's the seed of the Crew API and is how you build triage, specialists and escalation paths today.</p>
 <div class="hl"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">nobelagentic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
 
@@ -42,8 +44,32 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;→ now talking to </span><span class="si">{</span><span class="n">ev</span><span class="o">.</span><span class="n">to_agent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 
+<h2>Orchestration: agents as tools</h2>
+<p><code>as_tool()</code> turns any agent into a tool another agent can call. The orchestrator never gives up the conversation — it fires off tasks, gets answers back, and synthesizes:</p>
+<div class="hl"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">nobelagentic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+
+<span class="n">researcher</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;You find facts and cite sources.&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;researcher&quot;</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;web&quot;</span><span class="p">])</span>
+<span class="n">writer</span>     <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="s2">&quot;You turn notes into crisp prose.&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;writer&quot;</span><span class="p">)</span>
+
+<span class="n">orchestrator</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="s2">&quot;You produce short reports. Use the researcher for facts, &quot;</span>
+    <span class="s2">&quot;the writer for the final text. Combine their work yourself.&quot;</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">researcher</span><span class="o">.</span><span class="n">as_tool</span><span class="p">(),</span> <span class="n">writer</span><span class="o">.</span><span class="n">as_tool</span><span class="p">()],</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">orchestrator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;One paragraph on the state of African fintech&quot;</span><span class="p">))</span>
+</code></pre></div>
+
+<p>Same in TypeScript:</p>
+<div class="hl"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">orchestrator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Agent</span><span class="p">(</span><span class="s2">&quot;You produce short reports...&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">tools</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">researcher</span><span class="p">.</span><span class="nx">asTool</span><span class="p">(),</span><span class="w"> </span><span class="nx">writer</span><span class="p">.</span><span class="nx">asTool</span><span class="p">()],</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p>The sub-agent shows up to the model as a tool named <code>ask_&lt;name&gt;</code> (override with <code>as_tool(name=..., description=...)</code>). Because sub-agents are ordinary tools, the kernel's parallel tool calls apply: when the orchestrator asks the researcher and the writer for independent things in one step, they run concurrently.</p>
+<p><strong>Choosing between them:</strong> handoff when the <em>user</em> should end up talking to the specialist (triage, escalation). Orchestrate when the <em>agent</em> needs the specialist's output as an ingredient (research → write → combine).</p>
 <h2>Limits</h2>
-<p>Handoffs are one-way. For round-trips, review loops and parallel workers, use the Graph API (v0.2) or the Crew API (v0.3).</p><div class="pager"><a href="/docs/mcp">← MCP</a><a href="/docs/cli">CLI →</a></div></article>
+<p>Handoffs are one-way, and an orchestrator sees only a sub-agent's final answer, not its intermediate events. For round-trips, review loops, shared state and resumable multi-step pipelines, use the Graph API (v0.2) or the Crew API (v0.3).</p><div class="pager"><a href="/docs/mcp">← MCP</a><a href="/docs/cli">CLI →</a></div></article>
 </div>
 </div>
 </body>

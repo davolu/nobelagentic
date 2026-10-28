@@ -57,6 +57,20 @@ const triage  = new Agent("Route by language", { handoffs: [spanish] });
 await triage.run("Hola!");
 ```
 
+## Orchestration
+
+A handoff transfers the conversation. An orchestrator keeps control — sub-agents become tools it can call, combine and build on:
+
+```ts
+const researcher = new Agent("You find facts.", { name: "researcher", tools: ["web"] });
+const writer     = new Agent("You write crisp prose.", { name: "writer" });
+
+const boss = new Agent("Produce short reports. Delegate, then combine.", {
+  tools: [researcher.asTool(), writer.asTool()],
+});
+await boss.run("One paragraph on African fintech");
+```
+
 ## CLI
 
 ```

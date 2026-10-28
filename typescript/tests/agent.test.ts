@@ -66,3 +66,17 @@ describe("agent loop", () => {
     expect(r.steps).toBe(3);
   });
 });
+
+describe("orchestration", () => {
+  it("agent-as-tool keeps the orchestrator in control", async () => {
+    const worker = new Agent("I research things", { name: "researcher", model: new FakeProvider(["research done: 42"]) });
+    const boss = new Agent("You orchestrate specialists", {
+      model: new FakeProvider([[["ask_researcher", { task: "find the answer" }]], "the answer is 42"]),
+      tools: [worker.asTool()],
+    });
+    const r = await boss.run("go");
+    expect(r.output).toBe("the answer is 42");
+    expect(r.messages.find((m) => m.role === "tool")?.content).toBe("research done: 42");
+    expect(r.agent).toBe("agent"); // control never left the orchestrator
+  });
+});

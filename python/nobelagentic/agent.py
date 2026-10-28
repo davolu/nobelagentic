@@ -80,6 +80,22 @@ class Agent:
             description=f"Hand the conversation to the '{target.name}' agent. {target.instructions[:120]}",
         )
 
+    def as_tool(self, name: str | None = None, description: str | None = None) -> Tool:
+        """Expose this agent as a tool, so an orchestrator agent can delegate to it.
+
+        Unlike a handoff (which transfers the conversation), the calling agent
+        stays in control: it gets the result back and can combine it with
+        other tools and other agents.
+        """
+        async def _fn(task: str) -> str:
+            result = await self.arun(task)
+            return result.output
+        return tool(
+            _fn,
+            name=name or f"ask_{self.name}",
+            description=description or f"Delegate a task to the '{self.name}' agent and get its answer back. {self.instructions[:120]}",
+        )
+
     async def _load_mcp(self) -> None:
         if self._mcp_loaded or not self._mcp_specs:
             return

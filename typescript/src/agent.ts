@@ -68,6 +68,18 @@ export class Agent {
     });
   }
 
+  /** Expose this agent as a tool, so an orchestrator agent can delegate to it.
+   *  Unlike a handoff (which transfers the conversation), the caller stays in
+   *  control: it gets the result back and can combine it with other work. */
+  asTool(opts: { name?: string; description?: string } = {}): Tool {
+    return tool({
+      name: opts.name ?? `ask_${this.name}`,
+      description: opts.description ?? `Delegate a task to the '${this.name}' agent and get its answer back. ${this.instructions.slice(0, 120)}`,
+      parameters: z.object({ task: z.string() }),
+      execute: async ({ task }) => (await this.run(task)).output,
+    });
+  }
+
   private async setup(): Promise<void> {
     if (this.ready) return;
     if (this.pendingPacks.length) {

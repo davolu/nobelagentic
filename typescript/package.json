@@ -1,6 +1,6 @@
 {
   "name": "nobelagentic",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NobelAgentic — agents that get out of your way. One kernel, three APIs, any model.",
   "type": "module",
   "main": "./dist/index.js",

@@ -67,6 +67,19 @@ triage  = Agent("Route by language", handoffs=[spanish])
 triage.run("Hola!")   # → spanish answers
 ```
 
+## Orchestration
+
+A handoff transfers the conversation. An orchestrator keeps control — sub-agents become tools it can call, combine and build on:
+
+```python
+researcher = Agent("You find facts.", name="researcher", tools=["web"])
+writer     = Agent("You write crisp prose.", name="writer")
+
+boss = Agent("Produce short reports. Delegate, then combine.",
+             tools=[researcher.as_tool(), writer.as_tool()])
+boss.run("One paragraph on African fintech")
+```
+
 ## Streaming and events
 
 ```python
