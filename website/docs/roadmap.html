@@ -16,7 +16,7 @@
   <nav class="main"><a href="/docs/">Docs</a><a href="https://github.com/davolu/nobelagentic">GitHub</a></nav>
 </header>
 <div class="docs">
-  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Multi-agent</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap" aria-current=page>Roadmap</a></aside>
+  <aside><h4>Documentation</h4><a href="/docs/">Getting started</a><a href="/docs/tools">Tools</a><a href="/docs/models">Models</a><a href="/docs/mcp">MCP</a><a href="/docs/handoffs">Multi-agent (handoffs & orchestration)</a><a href="/docs/cli">CLI</a><a href="/docs/examples">Examples</a><a href="/docs/roadmap" aria-current=page>Roadmap</a></aside>
   <article><h1>Roadmap</h1>
 <p><strong>v0.1 — now.</strong> Provider layer (Anthropic + every OpenAI-compatible host), <code>@tool</code>, the ReAct loop with real streaming and parallel tool calls, six tool packs, MCP client with registry, handoffs, orchestration (<code>worker.as_tool()</code> — a supervisor agent that delegates and keeps control), multi-turn via <code>history=</code>, CLI. Project scaffolding: <code>nobelagentic new my-agent</code> (Python) and <code>npm create nobelagentic</code> (TypeScript). Python and TypeScript with the same API and the same event stream.</p>
 <p><strong>v0.2 — the production agent.</strong> The graph kernel: nodes, edges, typed state, checkpoints and resume. <code>Agent</code> is re-based onto it so human-in-the-loop approval ("pause before this tool runs, ask a human") and durable runs come for free. Plus the three things every production user asks for first:</p>

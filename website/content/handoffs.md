@@ -1,6 +1,6 @@
 ---
 title: Handoffs & orchestration
-nav: Multi-agent
+nav: Multi-agent (handoffs & orchestration)
 order: 5
 ---
 # Handoffs & orchestration
